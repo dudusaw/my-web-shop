@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/my-styles.css" th:href="@{/css/my-styles.css}">
+</head>
+<body>
+
+<div th:replace="~{nav-frag :: nav('cart')}"></div>
+
+<div class="container">
+    <table class="table table-hover table-striped mb-3">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Title</th>
+            <th scope="col">Count</th>
+            <th scope="col">Price each</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cartProduct : ${user.cartProducts}" th:object="${cartProduct.product}">
+            <th class="align-middle" scope="row" th:text="*{id}">1</th>
+            <td class="align-middle" th:text="*{title}">Mark</td>
+            <td class="align-middle" th:text="${cartProduct.count}">Otto</td>
+            <td class="align-middle" th:text="*{price}">@mdo</td>
+            <td><a class="btn btn-danger btn-sm align-middle" href="#" th:href="@{/cart/remove(id=*{id})}">remove</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <h2>Total price: <span th:text="${totalPrice}">10</span>$</h2>
+    <button class="btn btn-primary btn-lg my-4" type="button">Order</button>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+</body>
+</html>
