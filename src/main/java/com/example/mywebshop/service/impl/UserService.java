@@ -4,10 +4,12 @@ import com.example.mywebshop.config.exception.ProductNotFoundException;
 import com.example.mywebshop.entity.*;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.repository.UserRepository;
+import com.example.mywebshop.repository.UserRoleRepository;
 import com.example.mywebshop.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -24,11 +26,18 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, ProductRepository productRepository) {
+    public UserService(UserRepository userRepository,
+                       ProductRepository productRepository,
+                       UserRoleRepository userRoleRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.userRoleRepository = userRoleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -71,6 +80,15 @@ public class UserService implements IUserService {
         CartProduct productInCart = user.getProductInCart(productId);
         user.getCartProducts().remove(productInCart);
         em.remove(productInCart);
+    }
+
+    @Override
+    public void registerUser(SystemUser systemUser) {
+        String passwordEncoded = passwordEncoder.encode(systemUser.getPassword());
+        User user = new User(systemUser.getUsername(), passwordEncoded);
+        UserRole defaultRole = userRoleRepository.getByName("USER");
+        user.getRoles().add(defaultRole);
+        userRepository.save(user);
     }
 
     private Product findProductOrThrow(Long id) {

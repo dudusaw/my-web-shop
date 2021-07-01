@@ -5,11 +5,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Entity
-@Table
+@Table(name = "\"user\"")
 @Data
 @NoArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
@@ -34,6 +35,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<UserRole> roles;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        cartProducts = new ArrayList<>();
+        roles = new ArrayList<>();
+    }
 
     public CartProduct getProductInCart(Long productId) {
         for (CartProduct cartProduct : cartProducts) {

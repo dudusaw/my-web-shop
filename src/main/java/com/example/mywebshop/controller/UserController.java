@@ -18,11 +18,6 @@ public class UserController {
         this.IUserService = IUserService;
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login-form";
-    }
-
     @GetMapping("/cart")
     public String cart(HttpServletRequest request,
                        Model ui) {

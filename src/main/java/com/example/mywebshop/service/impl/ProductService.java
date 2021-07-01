@@ -7,6 +7,7 @@ import com.example.mywebshop.entity.ProductCategory;
 import com.example.mywebshop.repository.ProductCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.service.IProductService;
+import com.example.mywebshop.service.ITextGenerator;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,15 @@ public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final ProductCategoryRepository categoryRepository;
+    private final ITextGenerator textGenerator;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductCategoryRepository categoryRepository) {
+    public ProductService(ProductRepository productRepository,
+                          ProductCategoryRepository categoryRepository,
+                          ITextGenerator textGenerator) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.textGenerator = textGenerator;
     }
 
     @Override
@@ -52,11 +57,13 @@ public class ProductService implements IProductService {
         long[] categoryIds = categoryRepository.findAll().stream().mapToLong(ProductCategory::getId).toArray();
         List<Product> productList = new ArrayList<>();
         for (int i = 0; i < num; i++) {
-            String title = "Product " + i + RandomStringUtils.randomAlphabetic(1, 3);
-            String rndDescription = RandomStringUtils.randomAlphabetic(100, 200);
+            String title = "Product " + i + RandomStringUtils.randomAlphabetic(2, 2);
+            String rndDescription = textGenerator
+                    .generateText(1, TextGenLength.SHORT);
+            rndDescription = rndDescription.substring(0, Math.min(rndDescription.length(), 220)).trim() + ".";
             double rating = RandomUtils.nextDouble(1, 5);
             double price = RandomUtils.nextDouble(1, 500);
-            rating = BigDecimal.valueOf(rating).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            rating = BigDecimal.valueOf(rating).setScale(1, RoundingMode.HALF_UP).doubleValue();
             price = BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP).doubleValue();
             long categoryId = categoryIds[RandomUtils.nextInt(0, categoryIds.length)];
             ProductCategory category = categoryRepository.findById(categoryId).orElseThrow();

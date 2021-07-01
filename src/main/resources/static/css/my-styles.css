@@ -2,6 +2,19 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+.my-background {
+  background-image: url(/shop/imgs/bg-min.png);
+  background-repeat: no-repeat;
+  background-position-x: center;
+  opacity: 70%;
+  z-index: -1;
+  min-height: 100vh;
+}
+
+.login-form {
+  background-color: rgba(181, 192, 222, 0.56);
+}
+
 .text-my-indigo {
   color: #a571f4;
 }
@@ -20,6 +33,7 @@ nav {
 
 .card {
   border-radius: 10px;
+  border: 1px solid #a571f4;
   height: 30rem;
 }
 

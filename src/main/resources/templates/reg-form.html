@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>my-web-shop</title>
+    <link rel="icon" type="image/ico" th:href="@{favicon.ico}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/css/my-styles.css" th:href="@{/css/my-styles.css}">
+</head>
+<body>
+
+<div th:replace="~{nav-frag :: nav('login')}"></div>
+
+<div class="container m-5 p-5 mx-auto border border-primary rounded fs-3 login-form">
+    <form method="post" th:action="@{/reg}" th:object="${systemUser}">
+        <div class="mb-4">
+            <label for="exampleInputUsername" class="form-label">Username</label>
+            <input type="text" class="form-control" id="exampleInputUsername"
+                   th:field="*{username}" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : 'is-valid'">
+            <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="invalid-feedback fs-5">Name Error</div>
+        </div>
+        <div class="mb-4">
+            <label for="exampleInputEmail1" class="form-label">Email</label>
+            <input type="email" class="form-control" id="exampleInputEmail1"
+                   th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : 'is-valid'">
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback fs-5">Name Error</div>
+        </div>
+        <div class="mb-4">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1"
+                   th:field="*{password}" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : 'is-valid'">
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="invalid-feedback fs-5">Name Error</div>
+        </div>
+        <div class="mb-4" th:with="hasGlobError=${bindingResult != null && bindingResult.hasGlobalErrors()}">
+            <label for="exampleInputPasswordMatch1" class="form-label">Confirm password</label>
+            <input type="password" class="form-control" id="exampleInputPasswordMatch1"
+                   th:field="*{passwordMatch}" th:classappend="${hasGlobError} ? 'is-invalid' : 'is-valid'">
+            <div th:if="${hasGlobError}" th:text="${bindingResult.getGlobalError().getDefaultMessage()}"
+                 class="invalid-feedback fs-5">Name Error</div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg mb-4">Submit</button>
+        <div th:if="${success}" class="alert alert-success fs-4">Register successful! <a th:href="@{/login}" class="link-primary text-decoration-none">Log in now.</a></div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+</body>
+</html>

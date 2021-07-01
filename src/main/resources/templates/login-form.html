@@ -5,7 +5,8 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>my-web-shop</title>
+    <link rel="icon" type="image/ico" th:href="@{favicon.ico}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -16,7 +17,7 @@
 
 <div th:replace="~{nav-frag :: nav('login')}"></div>
 
-<div class="container m-5 p-5 mx-auto border border-primary rounded fs-3">
+<div class="container m-5 p-5 mx-auto border border-primary rounded fs-3 login-form">
     <form method="post" th:action="@{/login}">
         <div th:if="${param.get('error')}" class="alert alert-danger" role="alert">
             Credentials are wrong.
@@ -33,7 +34,8 @@
             <input type="checkbox" name="remember-me" class="form-check-input" id="exampleCheck1">
             <label class="form-check-label" for="exampleCheck1">Remember me</label>
         </div>
-        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+        <button type="submit" class="btn btn-primary btn-lg me-5">Submit</button>
+        <a th:href="@{/reg}" class="btn btn-secondary btn-lg">Sign up</a>
     </form>
 </div>
 
