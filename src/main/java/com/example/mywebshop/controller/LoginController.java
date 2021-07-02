@@ -37,11 +37,10 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             ui.addAttribute("bindingResult", bindingResult);
             ui.addAttribute("success", false);
-            return "reg-form";
+        } else {
+            userService.registerUser(systemUser);
+            ui.addAttribute("success", true);
         }
-
-        userService.registerUser(systemUser);
-        ui.addAttribute("success", true);
         return "reg-form";
     }
 }

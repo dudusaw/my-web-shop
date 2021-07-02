@@ -1,9 +1,9 @@
 package com.example.mywebshop.service.impl;
 
 import com.example.mywebshop.config.exception.ProductNotFoundException;
-import com.example.mywebshop.entity.CartProduct;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.entity.ProductCategory;
+import com.example.mywebshop.entity.ProductReview;
 import com.example.mywebshop.repository.ProductCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.service.IProductService;
@@ -46,10 +46,23 @@ public class ProductService implements IProductService {
     @Override
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
-        for (CartProduct cartProduct : product.getCartProducts()) {
-            em.remove(cartProduct);
-        }
         em.remove(product);
+    }
+
+    @Override
+    public void initProductReviewVotes(Product product) {
+        for (ProductReview review : product.getReviews()) {
+            int allVotesCount = review.getVotes().size();
+            Integer positiveVoteCount = productRepository.getPositiveVoteCount(review.getId());
+            Integer negativeVoteCount = allVotesCount - positiveVoteCount;
+            review.setPositiveVoteCount(positiveVoteCount);
+            review.setNegativeVoteCount(negativeVoteCount);
+        }
+    }
+
+    @Override
+    public Product getById(Long id) {
+        return productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
     }
 
     @Override
@@ -57,20 +70,23 @@ public class ProductService implements IProductService {
         long[] categoryIds = categoryRepository.findAll().stream().mapToLong(ProductCategory::getId).toArray();
         List<Product> productList = new ArrayList<>();
         for (int i = 0; i < num; i++) {
-            String title = "Product " + i + RandomStringUtils.randomAlphabetic(2, 2);
-            String rndDescription = textGenerator
-                    .generateText(1, TextGenLength.SHORT);
-            rndDescription = rndDescription.substring(0, Math.min(rndDescription.length(), 220)).trim() + ".";
-            double rating = RandomUtils.nextDouble(1, 5);
-            double price = RandomUtils.nextDouble(1, 500);
-            rating = BigDecimal.valueOf(rating).setScale(1, RoundingMode.HALF_UP).doubleValue();
-            price = BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP).doubleValue();
             long categoryId = categoryIds[RandomUtils.nextInt(0, categoryIds.length)];
             ProductCategory category = categoryRepository.findById(categoryId).orElseThrow();
-            Product newProduct = new Product(title, rndDescription, rating, price, category);
+            Product newProduct = generateProduct(i, category);
             productList.add(newProduct);
         }
         productRepository.saveAll(productList);
+    }
+
+    private Product generateProduct(int i, ProductCategory category) {
+        String title = "Product " + i + RandomStringUtils.randomAlphabetic(2, 2);
+        String rndDescription = textGenerator.generateText(1, TextGenLength.SHORT);
+        rndDescription = rndDescription.substring(0, Math.min(rndDescription.length(), 220)).trim() + ".";
+        double rating = RandomUtils.nextDouble(1, 5);
+        double price = RandomUtils.nextDouble(1, 500);
+        rating = BigDecimal.valueOf(rating).setScale(1, RoundingMode.HALF_UP).doubleValue();
+        price = BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        return new Product(title, rndDescription, rating, price, category);
     }
 
     @Override

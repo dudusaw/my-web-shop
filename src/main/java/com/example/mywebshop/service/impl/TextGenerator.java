@@ -17,10 +17,10 @@ public class TextGenerator implements ITextGenerator {
     }
 
     @Override
-    public String generateText(int numParagraphs, TextGenLength length) {
+    public String generateText(int numParagraphs, TextGenLength len) {
         String url = UriComponentsBuilder
                 .fromHttpUrl("https://www.loripsum.net/api/{num}/{length}/plaintext")
-                .buildAndExpand(numParagraphs, length).toString();
+                .buildAndExpand(numParagraphs, len.length).toString();
         return restTemplate.getForObject(url, String.class);
     }
 }

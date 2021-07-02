@@ -32,8 +32,11 @@ public class Product {
     @JoinColumn(name = "category_id")
     private ProductCategory category;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<CartProduct> cartProducts;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductReview> reviews;
 
     public Product(String title, String description, Double rating, Double price, ProductCategory category) {
         this.title = title;

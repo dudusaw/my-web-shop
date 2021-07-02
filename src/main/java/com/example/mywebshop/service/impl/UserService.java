@@ -56,7 +56,7 @@ public class UserService implements IUserService {
 
     @Override
     public Double calculateTotalCartPrice(User user) {
-        Double price = 0.0;
+        double price = 0.0;
         for (CartProduct cartProduct : user.getCartProducts()) {
             Product product = cartProduct.getProduct();
             price += product.getPrice() * cartProduct.getCount();
