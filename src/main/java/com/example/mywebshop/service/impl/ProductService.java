@@ -2,7 +2,7 @@ package com.example.mywebshop.service.impl;
 
 import com.example.mywebshop.config.exception.ProductNotFoundException;
 import com.example.mywebshop.entity.Product;
-import com.example.mywebshop.entity.ProductCategory;
+import com.example.mywebshop.entity.ProductMajorCategory;
 import com.example.mywebshop.entity.ProductReview;
 import com.example.mywebshop.repository.ProductCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
@@ -15,8 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,9 +24,6 @@ import java.util.List;
 @Service
 @Transactional
 public class ProductService implements IProductService {
-
-    @PersistenceContext
-    private EntityManager em;
 
     private final ProductRepository productRepository;
     private final ProductCategoryRepository categoryRepository;
@@ -45,40 +40,54 @@ public class ProductService implements IProductService {
 
     @Override
     public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
-        em.remove(product);
+        productRepository.deleteById(id);
+    }
+
+    @Override
+    public void updateProductRatingFromReviews(Long id) {
+        Product product = getByIdOrThrow(id);
+        int reviewCount = product.getReviews().size();
+        double ratingSum = product
+                .getReviews()
+                .stream()
+                .mapToInt(ProductReview::getRating)
+                .sum();
+        product.setRating(ratingSum / reviewCount);
+        productRepository.save(product);
     }
 
     @Override
     public void initProductReviewVotes(Product product) {
         for (ProductReview review : product.getReviews()) {
             int allVotesCount = review.getVotes().size();
-            Integer positiveVoteCount = productRepository.getPositiveVoteCount(review.getId());
-            Integer negativeVoteCount = allVotesCount - positiveVoteCount;
+            int positiveVoteCount = productRepository.getPositiveVoteCount(review.getId());
+            int negativeVoteCount = allVotesCount - positiveVoteCount;
             review.setPositiveVoteCount(positiveVoteCount);
             review.setNegativeVoteCount(negativeVoteCount);
         }
     }
 
     @Override
-    public Product getById(Long id) {
-        return productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+    public Product getByIdOrThrow(Long id) {
+        return productRepository
+                .findById(id)
+                .orElseThrow(ProductNotFoundException::new);
     }
 
     @Override
     public void createRandomProducts(int num) {
-        long[] categoryIds = categoryRepository.findAll().stream().mapToLong(ProductCategory::getId).toArray();
+        long[] categoryIds = categoryRepository.findAll().stream().mapToLong(ProductMajorCategory::getId).toArray();
         List<Product> productList = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             long categoryId = categoryIds[RandomUtils.nextInt(0, categoryIds.length)];
-            ProductCategory category = categoryRepository.findById(categoryId).orElseThrow();
+            ProductMajorCategory category = categoryRepository.findById(categoryId).orElseThrow();
             Product newProduct = generateProduct(i, category);
             productList.add(newProduct);
         }
         productRepository.saveAll(productList);
     }
 
-    private Product generateProduct(int i, ProductCategory category) {
+    private Product generateProduct(int i, ProductMajorCategory category) {
         String title = "Product " + i + RandomStringUtils.randomAlphabetic(2, 2);
         String rndDescription = textGenerator.generateText(1, TextGenLength.SHORT);
         rndDescription = rndDescription.substring(0, Math.min(rndDescription.length(), 220)).trim() + ".";

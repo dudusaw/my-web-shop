@@ -38,8 +38,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")
                     .successHandler(successHandler)
                 .and()
+                .exceptionHandling()
+                    .accessDeniedPage("/denied")
+                .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"));
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"));
     }
 
     @Bean

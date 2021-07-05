@@ -33,7 +33,9 @@ public class LoginController {
     }
 
     @PostMapping("/reg")
-    public String preformRegister(Model ui, @Valid @ModelAttribute SystemUser systemUser, BindingResult bindingResult) {
+    public String preformRegister(Model ui,
+                                  @Valid @ModelAttribute SystemUser systemUser,
+                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             ui.addAttribute("bindingResult", bindingResult);
             ui.addAttribute("success", false);

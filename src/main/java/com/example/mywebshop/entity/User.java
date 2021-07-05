@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,13 +21,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String email;
+
     @Column(unique = true)
     private String username;
 
     private String password;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<CartProduct> cartProducts;
+    @MapKeyJoinColumn(name = "product_id")
+    private Map<Long, CartProduct> cartProducts;
 
     @ManyToMany
     @JoinTable(
@@ -36,19 +40,11 @@ public class User {
     )
     private List<UserRole> roles;
 
-    public User(String username, String password) {
+    public User(String email, String username, String password) {
+        this.email = email;
         this.username = username;
         this.password = password;
-        cartProducts = new ArrayList<>();
+        cartProducts = new HashMap<>();
         roles = new ArrayList<>();
-    }
-
-    public CartProduct getProductInCart(Long productId) {
-        for (CartProduct cartProduct : cartProducts) {
-            if (cartProduct.getProduct().getId().equals(productId)) {
-                return cartProduct;
-            }
-        }
-        return null;
     }
 }

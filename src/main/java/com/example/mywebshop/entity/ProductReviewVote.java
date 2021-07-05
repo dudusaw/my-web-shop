@@ -14,10 +14,16 @@ public class ProductReviewVote {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * User who left the vote
+     */
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    /**
+     * The review being voted by the user
+     */
     @ManyToOne
     @JoinColumn(name = "review_id")
     private ProductReview review;

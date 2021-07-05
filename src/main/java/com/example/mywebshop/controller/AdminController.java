@@ -12,22 +12,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final IProductService IProductService;
+    private final IProductService productService;
 
     @Autowired
-    public AdminController(IProductService IProductService) {
-        this.IProductService = IProductService;
+    public AdminController(IProductService productService) {
+        this.productService = productService;
     }
 
     @GetMapping("/delete")
     public String deleteProduct(@RequestParam Long id) {
-        IProductService.deleteProduct(id);
+        productService.deleteProduct(id);
         return "redirect:/products";
     }
 
     @GetMapping("/rand/{num}")
     public String addRandomProducts(@PathVariable int num) {
-        IProductService.createRandomProducts(num);
+        productService.createRandomProducts(num);
         return "redirect:/products";
+    }
+
+    @GetMapping("/panel")
+    public String adminPanel() {
+        return "admin-panel";
     }
 }

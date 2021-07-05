@@ -1,4 +1,4 @@
-package com.example.mywebshop.config.valid;
+package com.example.mywebshop.config.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -7,11 +7,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = UniqueUsernameValidator.class)
-@Target( { ElementType.FIELD })
+@Constraint(validatedBy = FieldMatchValidator.class)
+@Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UniqueUsernameConstraint {
-    String message() default "Username already exists";
+public @interface FieldMatchConstraint {
+    String message() default "Values doesn't match";
+    String field();
+    String fieldMatch();
+
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

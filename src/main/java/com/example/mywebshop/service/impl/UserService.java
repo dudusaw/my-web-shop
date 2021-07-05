@@ -57,7 +57,7 @@ public class UserService implements IUserService {
     @Override
     public Double calculateTotalCartPrice(User user) {
         double price = 0.0;
-        for (CartProduct cartProduct : user.getCartProducts()) {
+        for (CartProduct cartProduct : user.getCartProducts().values()) {
             Product product = cartProduct.getProduct();
             price += product.getPrice() * cartProduct.getCount();
         }
@@ -67,26 +67,25 @@ public class UserService implements IUserService {
     @Override
     public void addProductToUserCart(User user, Long productId, int num) {
         Product product = findProductOrThrow(productId);
-        CartProduct cartProduct = user.getProductInCart(productId);
+        CartProduct cartProduct = user.getCartProducts().get(productId);
         if (cartProduct == null) {
             cartProduct = new CartProduct(user, product, 0);
-            user.getCartProducts().add(cartProduct);
+            user.getCartProducts().put(productId, cartProduct);
         }
         cartProduct.setCount(cartProduct.getCount() + 1);
     }
 
     @Override
     public void removeProductFromUserCart(User user, Long productId) {
-        CartProduct productInCart = user.getProductInCart(productId);
-        user.getCartProducts().remove(productInCart);
+        CartProduct productInCart = user.getCartProducts().remove(productId);
         em.remove(productInCart);
     }
 
     @Override
     public void registerUser(SystemUser systemUser) {
         String passwordEncoded = passwordEncoder.encode(systemUser.getPassword());
-        User user = new User(systemUser.getUsername(), passwordEncoded);
-        UserRole defaultRole = userRoleRepository.getByName("USER");
+        User user = new User(systemUser.getEmail(), systemUser.getUsername(), passwordEncoded);
+        UserRole defaultRole = userRoleRepository.findByName("USER");
         user.getRoles().add(defaultRole);
         userRepository.save(user);
     }

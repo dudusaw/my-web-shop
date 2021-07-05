@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -15,14 +15,15 @@
 </head>
 <body>
 
-<div th:replace="~{nav-frag :: nav('products')}"></div>
+<div th:replace="~{nav-frag :: nav('login')}"></div>
 
-Product details
+<div class="container">
 
-<ul>
-    <li th:each="review : ${product.reviews}"
-        th:text="|review: ${review.review}, rating: ${review.rating}, positive votes: ${review.positiveVoteCount}|"></li>
-</ul>
+    <h1 class="display-3">403 Forbidden.</h1>
+
+    <h3>Sorry, you don't have access to this page.</h3>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"

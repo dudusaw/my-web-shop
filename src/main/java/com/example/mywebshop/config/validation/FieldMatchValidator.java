@@ -1,4 +1,4 @@
-package com.example.mywebshop.config.valid;
+package com.example.mywebshop.config.validation;
 
 import org.springframework.beans.BeanWrapperImpl;
 

@@ -12,7 +12,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
-public class ProductCategory {
+public class ProductMajorCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

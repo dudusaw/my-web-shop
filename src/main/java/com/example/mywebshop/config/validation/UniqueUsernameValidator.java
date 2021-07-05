@@ -1,4 +1,4 @@
-package com.example.mywebshop.config.valid;
+package com.example.mywebshop.config.validation;
 
 import com.example.mywebshop.entity.User;
 import com.example.mywebshop.service.IUserService;

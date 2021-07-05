@@ -1,19 +1,24 @@
 package com.example.mywebshop.entity;
 
-import com.example.mywebshop.config.valid.FieldMatchConstraint;
-import com.example.mywebshop.config.valid.UniqueUsernameConstraint;
+import com.example.mywebshop.config.validation.FieldMatchConstraint;
+import com.example.mywebshop.config.validation.UniqueUsernameConstraint;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+/**
+ * Dto class for validation user before registering.
+ */
 @Data
 @FieldMatchConstraint(message = "Password doesn't match", field = "password", fieldMatch = "passwordMatch")
 public class SystemUser {
 
     @NotNull
     @UniqueUsernameConstraint
+    @Pattern(regexp = "[a-zA-Z][\\w-]+", message = "first symbol should be letter, then numbers and _ - symbols allowed")
     @Size(min = 3, message = "min username length is 3 symbols")
     private String username;
 

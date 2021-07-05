@@ -6,9 +6,11 @@ import org.springframework.data.domain.Page;
 public interface IProductService {
     void deleteProduct(Long id);
 
+    void updateProductRatingFromReviews(Long id);
+
     void initProductReviewVotes(Product product);
 
-    Product getById(Long id);
+    Product getByIdOrThrow(Long id);
 
     void createRandomProducts(int num);
 

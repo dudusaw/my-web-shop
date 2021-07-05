@@ -30,7 +30,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private ProductCategory category;
+    private ProductMajorCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<CartProduct> cartProducts;
@@ -38,7 +38,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductReview> reviews;
 
-    public Product(String title, String description, Double rating, Double price, ProductCategory category) {
+    public Product(String title, String description, Double rating, Double price, ProductMajorCategory category) {
         this.title = title;
         this.description = description;
         this.rating = rating;

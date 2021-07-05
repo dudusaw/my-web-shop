@@ -20,9 +20,10 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,
                                         Authentication authentication) throws IOException, ServletException {
-        super.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
         UserDetails user = (UserDetails) authentication.getPrincipal();
         httpServletRequest.getSession().setAttribute("user", user);
-        log.info("Authentication successful, user: " + user);
+        log.info("Authentication successful, username: " + user);
+        this.setDefaultTargetUrl("/products");
+        super.onAuthenticationSuccess(httpServletRequest, httpServletResponse, authentication);
     }
 }
