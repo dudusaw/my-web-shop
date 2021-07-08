@@ -4,7 +4,7 @@ import com.example.mywebshop.config.exception.ProductNotFoundException;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.entity.ProductMajorCategory;
 import com.example.mywebshop.entity.ProductReview;
-import com.example.mywebshop.repository.ProductCategoryRepository;
+import com.example.mywebshop.repository.ProductMajorCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.service.IProductService;
 import com.example.mywebshop.service.ITextGenerator;
@@ -26,12 +26,12 @@ import java.util.List;
 public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
-    private final ProductCategoryRepository categoryRepository;
+    private final ProductMajorCategoryRepository categoryRepository;
     private final ITextGenerator textGenerator;
 
     @Autowired
     public ProductService(ProductRepository productRepository,
-                          ProductCategoryRepository categoryRepository,
+                          ProductMajorCategoryRepository categoryRepository,
                           ITextGenerator textGenerator) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;

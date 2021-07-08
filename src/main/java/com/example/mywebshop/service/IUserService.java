@@ -1,6 +1,6 @@
 package com.example.mywebshop.service;
 
-import com.example.mywebshop.entity.SystemUser;
+import com.example.mywebshop.config.validation.SystemUser;
 import com.example.mywebshop.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

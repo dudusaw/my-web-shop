@@ -20,6 +20,8 @@ public class Product {
 
     private String title;
 
+    private String shortDescription;
+
     private String description;
 
     @Column(precision = 4, scale = 2)
@@ -29,7 +31,7 @@ public class Product {
     private Double price;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", referencedColumnName = "fk__category_id")
     private ProductMajorCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
@@ -38,9 +40,9 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductReview> reviews;
 
-    public Product(String title, String description, Double rating, Double price, ProductMajorCategory category) {
+    public Product(String title, String shortDescription, Double rating, Double price, ProductMajorCategory category) {
         this.title = title;
-        this.description = description;
+        this.shortDescription = shortDescription;
         this.rating = rating;
         this.price = price;
         this.category = category;

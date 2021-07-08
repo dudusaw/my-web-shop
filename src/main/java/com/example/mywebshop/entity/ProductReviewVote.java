@@ -18,14 +18,14 @@ public class ProductReviewVote {
      * User who left the vote
      */
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "fk__user_id")
     private User user;
 
     /**
      * The review being voted by the user
      */
     @ManyToOne
-    @JoinColumn(name = "review_id")
+    @JoinColumn(name = "review_id", referencedColumnName = "fk__review_id")
     private ProductReview review;
 
     // like or dislike

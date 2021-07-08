@@ -1,6 +1,6 @@
 package com.example.mywebshop.controller;
 
-import com.example.mywebshop.entity.SystemUser;
+import com.example.mywebshop.config.validation.SystemUser;
 import com.example.mywebshop.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
