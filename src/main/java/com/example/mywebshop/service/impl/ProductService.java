@@ -1,11 +1,14 @@
 package com.example.mywebshop.service.impl;
 
 import com.example.mywebshop.config.exception.ProductNotFoundException;
+import com.example.mywebshop.config.validation.ValidProduct;
+import com.example.mywebshop.entity.FileMeta;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.entity.ProductMajorCategory;
 import com.example.mywebshop.entity.ProductReview;
 import com.example.mywebshop.repository.ProductMajorCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
+import com.example.mywebshop.service.IFileService;
 import com.example.mywebshop.service.IProductService;
 import com.example.mywebshop.service.ITextGenerator;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -13,29 +16,62 @@ import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
-    private final ProductMajorCategoryRepository categoryRepository;
+    private final ProductMajorCategoryRepository majorCategoryRepository;
     private final ITextGenerator textGenerator;
+    private final IFileService fileService;
 
     @Autowired
     public ProductService(ProductRepository productRepository,
-                          ProductMajorCategoryRepository categoryRepository,
-                          ITextGenerator textGenerator) {
+                          ProductMajorCategoryRepository majorCategoryRepository,
+                          ITextGenerator textGenerator,
+                          IFileService fileService) {
         this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
+        this.majorCategoryRepository = majorCategoryRepository;
         this.textGenerator = textGenerator;
+        this.fileService = fileService;
+    }
+
+
+    @Override
+    public void addNewProduct(ValidProduct validProduct) {
+        Product product = new Product();
+        product.setTitle(validProduct.getTitle());
+        product.setShortDescription(validProduct.getShortDescription());
+        product.setDescription(validProduct.getDescription());
+        product.setPrice(validProduct.getPrice());
+        ProductMajorCategory category = majorCategoryRepository
+                .findByName(validProduct.getCategory())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "category not found"));
+        product.setCategory(category);
+        FileMeta fileMeta = fileService.saveImageFileIfExists(validProduct.getImageFile());
+        product.setImageFile(fileMeta);
+        productRepository.save(product);
+    }
+
+    @Override
+    public List<String> getMajorCategoriesList() {
+        return majorCategoryRepository
+                .findAll()
+                .stream()
+                .map(ProductMajorCategory::getName)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -76,11 +112,11 @@ public class ProductService implements IProductService {
 
     @Override
     public void createRandomProducts(int num) {
-        long[] categoryIds = categoryRepository.findAll().stream().mapToLong(ProductMajorCategory::getId).toArray();
+        long[] categoryIds = majorCategoryRepository.findAll().stream().mapToLong(ProductMajorCategory::getId).toArray();
         List<Product> productList = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             long categoryId = categoryIds[RandomUtils.nextInt(0, categoryIds.length)];
-            ProductMajorCategory category = categoryRepository.findById(categoryId).orElseThrow();
+            ProductMajorCategory category = majorCategoryRepository.findById(categoryId).orElseThrow();
             Product newProduct = generateProduct(i, category);
             productList.add(newProduct);
         }
@@ -89,13 +125,15 @@ public class ProductService implements IProductService {
 
     private Product generateProduct(int i, ProductMajorCategory category) {
         String title = "Product " + i + RandomStringUtils.randomAlphabetic(2, 2);
-        String rndDescription = textGenerator.generateText(1, TextGenLength.SHORT);
-        rndDescription = rndDescription.substring(0, Math.min(rndDescription.length(), 220)).trim() + ".";
+        String rndShortDescription = textGenerator.generateText(1, TextGenLength.SHORT);
+        String rndLongDescription = textGenerator.generateText(3, TextGenLength.MEDIUM);
+        rndShortDescription = rndShortDescription.substring(0, Math.min(rndShortDescription.length(), 60)).trim();
+        rndLongDescription = rndLongDescription.substring(0, Math.min(rndLongDescription.length(), 900)).trim();
         double rating = RandomUtils.nextDouble(1, 5);
         double price = RandomUtils.nextDouble(1, 500);
         rating = BigDecimal.valueOf(rating).setScale(1, RoundingMode.HALF_UP).doubleValue();
         price = BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        return new Product(title, rndDescription, rating, price, category);
+        return new Product(title, rndShortDescription, rndLongDescription, rating, price, category);
     }
 
     @Override

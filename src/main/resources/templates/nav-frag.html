@@ -36,7 +36,12 @@
                         <a th:classappend="${page == 'products'} ? 'active' : _" class="nav-link" href="#" th:href="@{/products}">Products</a>
                     </li>
                     <li class="nav-item me-3">
-                        <a th:classappend="${page == 'cart'} ? 'active' : _" class="nav-link" href="#" th:href="@{/cart}">Cart</a>
+                        <a th:classappend="${page == 'cart'} ? 'active' : _" class="nav-link position-relative" href="#" th:href="@{/cart}">Cart
+                            <h5 th:if="${user != null && !user.cartProducts.isEmpty()}">
+                                <span th:text="${user.getCartProductsCount()}"
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">99+</span>
+                            </h5>
+                        </a>
                     </li>
                     <li class="nav-item me-3" sec:authorize="hasRole('ROLE_ADMIN')">
                         <a th:classappend="${page == 'admin-panel'} ? 'active' : _" class="nav-link" href="#" th:href="@{/admin/panel}">Admin panel</a>

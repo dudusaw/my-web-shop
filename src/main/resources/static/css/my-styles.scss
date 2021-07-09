@@ -11,7 +11,7 @@ body {
     min-height: 100vh;
 }
 
-.login-form {
+.my-form-cntr {
     background-color: rgb(181 192 222 / 56%);
 }
 
@@ -34,7 +34,13 @@ nav {
 .card {
     border-radius: 10px;
     border: 1px solid #a571f4;
-    height: 30rem;
+    height: 40rem;
+}
+
+.card-img-top {
+    border-bottom: 4px solid lightgray;
+    object-fit: contain;
+    height: 40%;
 }
 
 .my-card-top {

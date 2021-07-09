@@ -35,8 +35,8 @@ public class User {
     @ManyToMany
     @JoinTable(
             name = "user_to_role",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "fk__user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "fk__role_id")
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<UserRole> roles;
 
@@ -46,5 +46,13 @@ public class User {
         this.password = password;
         cartProducts = new HashMap<>();
         roles = new ArrayList<>();
+    }
+
+    public int getCartProductsCount() {
+        int c = 0;
+        for (CartProduct value : cartProducts.values()) {
+            c += value.getCount();
+        }
+        return c;
     }
 }

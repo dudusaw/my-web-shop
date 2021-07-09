@@ -1,6 +1,6 @@
 package com.example.mywebshop.controller;
 
-import com.example.mywebshop.config.validation.SystemUser;
+import com.example.mywebshop.config.validation.ValidUser;
 import com.example.mywebshop.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,19 +28,19 @@ public class LoginController {
     }
 
     @GetMapping("/reg")
-    public String register(SystemUser systemUser) {
+    public String register(ValidUser validUser) {
         return "reg-form";
     }
 
     @PostMapping("/reg")
     public String preformRegister(Model ui,
-                                  @Valid @ModelAttribute SystemUser systemUser,
+                                  @Valid @ModelAttribute ValidUser validUser,
                                   BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             ui.addAttribute("bindingResult", bindingResult);
             ui.addAttribute("success", false);
         } else {
-            userService.registerUser(systemUser);
+            userService.registerUser(validUser);
             ui.addAttribute("success", true);
         }
         return "reg-form";

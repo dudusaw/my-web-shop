@@ -1,6 +1,6 @@
 package com.example.mywebshop.service;
 
-import com.example.mywebshop.config.validation.SystemUser;
+import com.example.mywebshop.config.validation.ValidUser;
 import com.example.mywebshop.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,7 +19,7 @@ public interface IUserService extends UserDetailsService {
 
     void removeProductFromUserCart(User user, Long productId);
 
-    void registerUser(SystemUser systemUser);
+    void registerUser(ValidUser validUser);
 
     @Override
     UserDetails loadUserByUsername(String s) throws UsernameNotFoundException;

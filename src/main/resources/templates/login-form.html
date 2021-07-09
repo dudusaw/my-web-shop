@@ -17,7 +17,7 @@
 
 <div th:replace="~{nav-frag :: nav('login')}"></div>
 
-<div class="container m-5 p-5 mx-auto border border-primary rounded fs-3 login-form">
+<div class="container m-5 p-5 mx-auto border border-primary rounded fs-3 my-form-cntr">
     <form method="post" th:action="@{/login}">
         <div th:if="${param.get('error')}" class="alert alert-danger" role="alert">
             Credentials are wrong.

@@ -1,7 +1,7 @@
 package com.example.mywebshop.service.impl;
 
 import com.example.mywebshop.config.exception.ProductNotFoundException;
-import com.example.mywebshop.config.validation.SystemUser;
+import com.example.mywebshop.config.validation.ValidUser;
 import com.example.mywebshop.entity.*;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.repository.UserRepository;
@@ -83,9 +83,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void registerUser(SystemUser systemUser) {
-        String passwordEncoded = passwordEncoder.encode(systemUser.getPassword());
-        User user = new User(systemUser.getEmail(), systemUser.getUsername(), passwordEncoded);
+    public void registerUser(ValidUser validUser) {
+        String passwordEncoded = passwordEncoder.encode(validUser.getPassword());
+        User user = new User(validUser.getEmail(), validUser.getUsername(), passwordEncoded);
         UserRole defaultRole = userRoleRepository.findByName("USER");
         user.getRoles().add(defaultRole);
         userRepository.save(user);

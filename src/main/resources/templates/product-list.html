@@ -21,6 +21,8 @@
             <div class="col-xl-4 col-lg-4" th:each="product : ${products}">
                 <div class="card overflow-hidden">
                     <div class="my-card-top border-bottom-2"></div>
+                    <img th:src="${product.imageFile == null} ? @{/imgs/no-image.jpg} : @{/file/} + ${product.imageFile.path}"
+                         class="card-img-top" alt="..." src="#">
                     <div class="card-body d-flex flex-column">
                         <div class="card-title row">
                             <h3 th:text="*{product.title}" class="fw-bold col-8">Product 2</h3>

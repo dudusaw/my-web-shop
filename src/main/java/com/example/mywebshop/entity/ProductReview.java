@@ -17,11 +17,11 @@ public class ProductReview {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "fk__user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "fk__product_id")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     private Integer rating;

@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
  */
 @Data
 @FieldMatchConstraint(message = "Password doesn't match", field = "password", fieldMatch = "passwordMatch")
-public class SystemUser {
+public class ValidUser {
 
     @NotNull
     @UniqueUsernameConstraint

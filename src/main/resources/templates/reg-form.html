@@ -17,8 +17,8 @@
 
 <div th:replace="~{nav-frag :: nav('login')}"></div>
 
-<div class="container m-5 p-5 mx-auto border border-primary rounded fs-3 login-form">
-    <form method="post" th:action="@{/reg}" th:object="${systemUser}">
+<div class="container m-5 p-5 mx-auto border border-primary rounded fs-3 my-form-cntr">
+    <form method="post" th:action="@{/reg}" th:object="${validUser}">
         <div class="mb-4">
             <label for="exampleInputUsername" class="form-label">Username</label>
             <input type="text" class="form-control" id="exampleInputUsername"
@@ -45,7 +45,9 @@
                  class="invalid-feedback fs-5">Name Error</div>
         </div>
         <button type="submit" class="btn btn-primary btn-lg mb-4">Submit</button>
-        <div th:if="${success}" class="alert alert-success fs-4">Register successful! <a th:href="@{/login}" class="link-primary text-decoration-none">Log in now.</a></div>
+        <div th:if="${success}" class="alert alert-success fs-4">
+            Register successful! <a th:href="@{/login}" class="link-primary text-decoration-none">Log in now.</a>
+        </div>
     </form>
 </div>
 

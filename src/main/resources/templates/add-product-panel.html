@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>my-web-shop</title>
+    <link rel="icon" type="image/ico" th:href="@{/favicon.ico}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/css/my-styles.css" th:href="@{/css/my-styles.css}">
+</head>
+<body>
+<div th:replace="~{nav-frag :: nav('admin-panel')}"></div>
+
+<div class="container m-5 p-5 mx-auto border border-primary rounded fs-3 my-form-cntr">
+    <form method="post" th:action="@{/admin/add-product}" th:object="${validProduct}" enctype="multipart/form-data">
+        <div th:if="${success == false && bindingResult != null}" class="alert alert-danger fs-4">
+            <ul>
+                <li th:each="err : ${bindingResult.getAllErrors()}" th:text="${err.getDefaultMessage()}"></li>
+            </ul>
+        </div>
+        <div th:if="${success}" class="alert alert-success fs-4">
+            <p>Product added!</p>
+        </div>
+        <div class="mb-3">
+            <label for="productTitle" class="form-label">Product title</label>
+            <input type="text" class="form-control" id="productTitle" th:field="*{title}">
+        </div>
+        <div class="mb-3">
+            <label for="shortDesc" class="form-label">Short description</label>
+            <input type="text" class="form-control" id="shortDesc" th:field="*{shortDescription}">
+        </div>
+        <div class="mb-3">
+            <label for="longDesc" class="form-label">Main description</label>
+            <textarea class="form-control" id="longDesc" rows="3" th:field="*{description}"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="imageFile" class="form-label">Product image</label>
+            <input class="form-control" type="file" id="imageFile" name="image">
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon3">$</span>
+                <input type="number" class="form-control" id="price" th:field="*{price}">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Category</label>
+            <select class="form-select" th:field="*{category}">
+                <option th:each="c : ${categoryList}" th:text="${c}" th:value="${c}">One</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-lg btn-primary mt-5">Submit</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+</body>
+</html>

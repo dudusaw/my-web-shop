@@ -10,11 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@RequestMapping("/products")
 public class ProductController {
 
     private final IProductService productService;
@@ -26,7 +28,7 @@ public class ProductController {
         this.userService = userService;
     }
 
-    @GetMapping("/products")
+    @GetMapping
     public String products(Model ui,
                            HttpServletRequest request,
                            @RequestParam(defaultValue = "0") int pageNum,
@@ -38,7 +40,7 @@ public class ProductController {
         return "product-list";
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public String productDetails(@PathVariable Long id, Model ui) {
         Product product = productService.getByIdOrThrow(id);
         productService.initProductReviewVotes(product);

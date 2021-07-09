@@ -1,9 +1,16 @@
 package com.example.mywebshop.service;
 
+import com.example.mywebshop.config.validation.ValidProduct;
 import com.example.mywebshop.entity.Product;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface IProductService {
+    void addNewProduct(ValidProduct validProduct);
+
+    List<String> getMajorCategoriesList();
+
     void deleteProduct(Long id);
 
     void updateProductRatingFromReviews(Long id);
