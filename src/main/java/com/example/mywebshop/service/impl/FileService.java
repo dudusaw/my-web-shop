@@ -31,8 +31,7 @@ public class FileService implements com.example.mywebshop.service.IFileService {
         try {
             if (checkForEmpty(imageFile)) {
                 String uuid = UUID.randomUUID().toString();
-                String filename = uuid + "__" + imageFile.getOriginalFilename();
-                Path dest = Paths.get(imageLocation).resolve(filename);
+                Path dest = Paths.get(imageLocation).resolve(uuid);
                 imageFile.transferTo(dest);
                 fileMeta = new FileMeta(dest.subpath(1, dest.getNameCount()).toString(), imageFile.getOriginalFilename());
                 fileStoreRepository.save(fileMeta);

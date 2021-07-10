@@ -13,7 +13,7 @@ import java.util.List;
 public class ProductReview {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne

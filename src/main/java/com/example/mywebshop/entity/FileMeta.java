@@ -14,7 +14,7 @@ import javax.persistence.Id;
 public class FileMeta {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     private String path;

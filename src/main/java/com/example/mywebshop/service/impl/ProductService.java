@@ -51,14 +51,15 @@ public class ProductService implements IProductService {
 
     @Override
     public void addNewProduct(ValidProduct validProduct) {
+        ProductMajorCategory category = majorCategoryRepository
+                .findByName(validProduct.getCategory())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "category not found"));
+
         Product product = new Product();
         product.setTitle(validProduct.getTitle());
         product.setShortDescription(validProduct.getShortDescription());
         product.setDescription(validProduct.getDescription());
         product.setPrice(validProduct.getPrice());
-        ProductMajorCategory category = majorCategoryRepository
-                .findByName(validProduct.getCategory())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "category not found"));
         product.setCategory(category);
         FileMeta fileMeta = fileService.saveImageFileIfExists(validProduct.getImageFile());
         product.setImageFile(fileMeta);
