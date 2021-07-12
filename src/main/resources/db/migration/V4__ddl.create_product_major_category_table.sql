@@ -6,6 +6,3 @@ create table product_major_category
     name varchar(255)
 );
 
-alter table product_major_category
-    owner to postgres;
-

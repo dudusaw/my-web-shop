@@ -9,10 +9,7 @@ create table cart_product
             references product,
     user_id           bigint
         constraint fk__user_id
-            references "user",
+            references user_entity,
     cart_products_key bigint
 );
-
-alter table cart_product
-    owner to postgres;
 

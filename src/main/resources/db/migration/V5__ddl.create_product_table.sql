@@ -13,6 +13,3 @@ create table product
             references product_major_category
 );
 
-alter table product
-    owner to postgres;
-

@@ -11,9 +11,6 @@ create table product_review
             references product,
     user_id    bigint
         constraint fk__user_id
-            references "user"
+            references user_entity
 );
-
-alter table product_review
-    owner to postgres;
 

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "user_entity") // user is already defined keyword in pg
 @Data
 @NoArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)

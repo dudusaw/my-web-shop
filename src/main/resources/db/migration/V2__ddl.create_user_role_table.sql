@@ -5,6 +5,3 @@ create table user_role
             primary key,
     name varchar(255)
 );
-
-alter table user_role
-    owner to postgres;

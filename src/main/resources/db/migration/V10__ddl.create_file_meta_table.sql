@@ -10,6 +10,3 @@ alter table product
     add column image_file_id bigint
         constraint fk__image_file_id
             references file_meta;
-
-alter table file_meta
-    owner to postgres;

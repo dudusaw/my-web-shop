@@ -1,4 +1,4 @@
-create table "user"
+create table user_entity
 (
     id       bigserial
         constraint user_pkey
@@ -9,7 +9,4 @@ create table "user"
         constraint uk_username
             unique
 );
-
-alter table "user"
-    owner to postgres;
 
