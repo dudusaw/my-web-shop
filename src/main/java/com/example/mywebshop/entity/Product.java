@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -27,8 +28,8 @@ public class Product {
     @Column(precision = 4, scale = 2)
     private Double rating;
 
-    @Column(precision = 12, scale = 5)
-    private Double price;
+    @Column(precision = 12, scale = 2)
+    private BigDecimal price;
 
     @ManyToOne
     @JoinColumn(name = "image_file_id")
@@ -44,7 +45,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductReview> reviews;
 
-    public Product(String title, String shortDescription, String description, Double rating, Double price, ProductMajorCategory category) {
+    public Product(String title, String shortDescription, String description, Double rating, BigDecimal price, ProductMajorCategory category) {
         this.title = title;
         this.shortDescription = shortDescription;
         this.description = description;

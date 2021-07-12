@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 @Controller
 @RequestMapping("/admin")
@@ -27,7 +29,7 @@ public class AdminController {
     public String deleteProduct(@RequestParam Long id,
                                 HttpServletRequest request) {
         productService.deleteProduct(id);
-        return "redirect:" + request.getHeader("referer");
+        return "redirect:/products";
     }
 
     @GetMapping("/add-product")
@@ -53,15 +55,10 @@ public class AdminController {
         return "add-product-panel";
     }
 
-    @GetMapping("/rand/{num}")
+    @GetMapping(value = "/rand/{num}")
     public String addRandomProducts(@PathVariable int num,
                                     HttpServletRequest request) {
         productService.createRandomProducts(num);
-        return "redirect:" + request.getHeader("referer");
-    }
-
-    @GetMapping("/panel")
-    public String adminPanel() {
-        return "admin-panel";
+        return "redirect:/products";
     }
 }

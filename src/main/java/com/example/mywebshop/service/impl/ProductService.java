@@ -14,11 +14,11 @@ import com.example.mywebshop.service.ITextGenerator;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
@@ -31,6 +31,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ProductService implements IProductService {
+
+    @Value("${my-values.shortDescriptionMaxSymbols}")
+    public int shortDescriptionMaxSymbols;
+    @Value("${my-values.longDescriptionMaxSymbols}")
+    public int longDescriptionMaxSymbols;
 
     private final ProductRepository productRepository;
     private final ProductMajorCategoryRepository majorCategoryRepository;
@@ -127,13 +132,15 @@ public class ProductService implements IProductService {
     private Product generateProduct(int i, ProductMajorCategory category) {
         String title = "Product " + i + RandomStringUtils.randomAlphabetic(2, 2);
         String rndShortDescription = textGenerator.generateText(1, TextGenLength.SHORT);
-        String rndLongDescription = textGenerator.generateText(3, TextGenLength.MEDIUM);
-        rndShortDescription = rndShortDescription.substring(0, Math.min(rndShortDescription.length(), 60)).trim();
-        rndLongDescription = rndLongDescription.substring(0, Math.min(rndLongDescription.length(), 900)).trim();
+        String rndLongDescription = textGenerator.generateText(3, TextGenLength.LONG);
+        rndShortDescription =
+                rndShortDescription.substring(0, Math.min(rndShortDescription.length(), shortDescriptionMaxSymbols)).trim();
+        rndLongDescription =
+                rndLongDescription.substring(0, Math.min(rndLongDescription.length(), longDescriptionMaxSymbols)).trim();
         double rating = RandomUtils.nextDouble(1, 5);
-        double price = RandomUtils.nextDouble(1, 500);
+        BigDecimal price = BigDecimal.valueOf(RandomUtils.nextDouble(1, 500));
         rating = BigDecimal.valueOf(rating).setScale(1, RoundingMode.HALF_UP).doubleValue();
-        price = BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        price = price.setScale(2, RoundingMode.HALF_UP);
         return new Product(title, rndShortDescription, rndLongDescription, rating, price, category);
     }
 

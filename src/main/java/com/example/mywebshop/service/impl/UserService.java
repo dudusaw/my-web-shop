@@ -2,7 +2,10 @@ package com.example.mywebshop.service.impl;
 
 import com.example.mywebshop.config.exception.ProductNotFoundException;
 import com.example.mywebshop.config.validation.ValidUser;
-import com.example.mywebshop.entity.*;
+import com.example.mywebshop.entity.CartProduct;
+import com.example.mywebshop.entity.Product;
+import com.example.mywebshop.entity.User;
+import com.example.mywebshop.entity.UserRole;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.repository.UserRepository;
 import com.example.mywebshop.repository.UserRoleRepository;
@@ -17,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 
 @Service
 @Transactional
@@ -57,12 +61,13 @@ public class UserService implements IUserService {
 
     @Override
     public Double calculateTotalCartPrice(User user) {
-        double price = 0.0;
+        BigDecimal price = BigDecimal.ZERO;
         for (CartProduct cartProduct : user.getCartProducts().values()) {
             Product product = cartProduct.getProduct();
-            price += product.getPrice() * cartProduct.getCount();
+            BigDecimal priceMulCount = product.getPrice().multiply(BigDecimal.valueOf(cartProduct.getCount()));
+            price = price.add(priceMulCount);
         }
-        return price;
+        return price.doubleValue();
     }
 
     @Override
@@ -73,13 +78,15 @@ public class UserService implements IUserService {
             cartProduct = new CartProduct(user, product, 0);
             user.getCartProducts().put(productId, cartProduct);
         }
-        cartProduct.setCount(cartProduct.getCount() + 1);
+        cartProduct.setCount(cartProduct.getCount() + num);
     }
 
     @Override
     public void removeProductFromUserCart(User user, Long productId) {
         CartProduct productInCart = user.getCartProducts().remove(productId);
-        em.remove(productInCart);
+        if (productInCart != null) {
+            em.remove(productInCart);
+        }
     }
 
     @Override

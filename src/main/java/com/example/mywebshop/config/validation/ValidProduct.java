@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 @Data
 public class ValidProduct {
@@ -24,7 +25,7 @@ public class ValidProduct {
     private MultipartFile imageFile;
 
     @NotNull(message = "price is empty")
-    private Double price;
+    private BigDecimal price;
 
     @NotNull(message = "category is empty")
     private String category;

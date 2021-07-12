@@ -5,7 +5,7 @@ create table product
             primary key,
     description varchar(1000),
     short_description varchar(255),
-    price       double precision,
+    price       decimal(12,2),
     rating      double precision,
     title       varchar(255),
     category_id bigint
