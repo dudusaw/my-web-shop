@@ -13,18 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.validation.Valid;
 
 @Controller
-public class LoginController {
+public class RegistrationController {
 
     private final IUserService userService;
 
     @Autowired
-    public LoginController(IUserService userService) {
+    public RegistrationController(IUserService userService) {
         this.userService = userService;
-    }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login-form";
     }
 
     @GetMapping("/reg")

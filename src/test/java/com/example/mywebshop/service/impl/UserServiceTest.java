@@ -99,10 +99,10 @@ class UserServiceTest {
         User user = createTestUser();
 
         BigDecimal total = new BigDecimal(0);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             Product product = new Product();
             product.setTitle("p" + i);
-            BigDecimal price = BigDecimal.valueOf(RandomUtils.nextDouble(0.1, 1000000));
+            BigDecimal price = BigDecimal.valueOf(RandomUtils.nextDouble(0.1, 10e9));
             int count = RandomUtils.nextInt(1, 500);
             product.setPrice(price);
             product = productRepository.save(product);
