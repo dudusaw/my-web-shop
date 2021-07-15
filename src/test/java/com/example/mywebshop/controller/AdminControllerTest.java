@@ -84,8 +84,7 @@ class AdminControllerTest {
     }
 
     @Test
-    void addProductWithImage_valid(@Value("classpath:test/sofa.jpg") Resource image,
-                                   @Value("${my-values.github-workspace}") String workspace)
+    void addProductWithImage_valid(@Value("classpath:test/sofa.jpg") Resource image)
             throws Exception {
         String title = "test_product";
         String shortDesc = "asdf";
@@ -121,7 +120,7 @@ class AdminControllerTest {
 
         assertThat(allByOriginalFilename.isEmpty()).isFalse();
 
-        Path path = Paths.get(workspace).resolve("product_images").resolve(allByOriginalFilename.get(0).getPath());
+        Path path = Paths.get("product_images").resolve(allByOriginalFilename.get(0).getPath());
         assertThat(Files.exists(path)).isTrue();
         Files.deleteIfExists(path);
     }
