@@ -105,7 +105,7 @@ class AdminControllerTest {
 
         IFileService fileService = ctx.getBean(IFileService.class);
         String imageLocation = (String) ReflectionTestUtils.getField(fileService, "imageLocation");
-        String resultImageLocation = workspace + imageLocation;
+        String resultImageLocation = Paths.get(workspace).resolve(imageLocation).toString();
         ReflectionTestUtils.setField(fileService, "imageLocation", resultImageLocation);
 
         Map<String, Object> model = mvc.perform(multipart("/admin/add-product")
