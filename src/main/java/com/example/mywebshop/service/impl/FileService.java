@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -34,6 +35,7 @@ public class FileService implements com.example.mywebshop.service.IFileService {
                 String[] split = imageFile.getOriginalFilename().split("\\.");
                 String fileExtension = "." + split[split.length - 1];
                 Path dest = Paths.get(imageLocation).resolve(uuid + fileExtension);
+                Files.createDirectories(Paths.get(imageLocation));
                 imageFile.transferTo(dest);
                 fileMeta = new FileMeta(dest.subpath(1, dest.getNameCount()).toString(), imageFile.getOriginalFilename());
                 fileStoreRepository.save(fileMeta);
