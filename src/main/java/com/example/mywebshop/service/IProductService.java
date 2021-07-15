@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface IProductService {
-    void addNewProduct(ValidProduct validProduct);
+    Long addNewProduct(ValidProduct validProduct);
 
     List<String> getMajorCategoriesList();
 

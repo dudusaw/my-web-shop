@@ -26,8 +26,7 @@ public class AdminController {
     }
 
     @GetMapping("/delete")
-    public String deleteProduct(@RequestParam Long id,
-                                HttpServletRequest request) {
+    public String deleteProduct(@RequestParam Long id) {
         productService.deleteProduct(id);
         return "redirect:/products";
     }

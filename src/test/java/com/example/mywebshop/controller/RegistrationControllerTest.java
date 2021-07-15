@@ -13,6 +13,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,6 +25,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
+@Transactional
 class RegistrationControllerTest {
 
     private MockMvc mvc;
