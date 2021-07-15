@@ -35,7 +35,7 @@ public class FileService implements com.example.mywebshop.service.IFileService {
                 String[] split = imageFile.getOriginalFilename().split("\\.");
                 String fileExtension = "." + split[split.length - 1];
                 Path dest = Paths.get(imageLocation).resolve(uuid + fileExtension);
-                Files.createDirectories(Paths.get(imageLocation));
+                Files.createDirectories(dest.subpath(0, dest.getNameCount()-1));
                 imageFile.transferTo(dest);
                 fileMeta = new FileMeta(dest.subpath(1, dest.getNameCount()).toString(), imageFile.getOriginalFilename());
                 fileStoreRepository.save(fileMeta);
