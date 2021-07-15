@@ -88,8 +88,7 @@ class AdminControllerTest {
 
     @Test
     void addProductWithImage_valid(@Value("classpath:test/sofa.jpg") Resource image,
-                                   @Autowired ApplicationContext ctx,
-                                   @Value("${my-values-github-workspace}") String workspace)
+                                   @Value("${my-values.image-location}") String imageLocation)
             throws Exception {
         String title = "test_product";
         String shortDesc = "asdf";
@@ -102,11 +101,6 @@ class AdminControllerTest {
                 image.getFilename(),
                 MediaType.IMAGE_JPEG_VALUE,
                 image.getInputStream());
-
-        IFileService fileService = ctx.getBean(IFileService.class);
-        String imageLocation = (String) ReflectionTestUtils.getField(fileService, "imageLocation");
-        String resultImageLocation = Paths.get(workspace).resolve(imageLocation).toString();
-        ReflectionTestUtils.setField(fileService, "imageLocation", resultImageLocation);
 
         Map<String, Object> model = mvc.perform(multipart("/admin/add-product")
                 .file(file)
@@ -130,7 +124,7 @@ class AdminControllerTest {
 
         assertThat(allByOriginalFilename.isEmpty()).isFalse();
 
-        Path path = Paths.get(resultImageLocation).resolve(allByOriginalFilename.get(0).getPath());
+        Path path = Paths.get(imageLocation).resolve(allByOriginalFilename.get(0).getPath());
         assertThat(Files.exists(path)).isTrue();
         Files.deleteIfExists(path);
     }
