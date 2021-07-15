@@ -4,15 +4,18 @@ import com.example.mywebshop.entity.FileMeta;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.repository.FileStoreRepository;
 import com.example.mywebshop.repository.ProductRepository;
+import com.example.mywebshop.service.IFileService;
 import com.example.mywebshop.service.IProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BindingResult;
 
@@ -84,7 +87,9 @@ class AdminControllerTest {
     }
 
     @Test
-    void addProductWithImage_valid(@Value("classpath:test/sofa.jpg") Resource image)
+    void addProductWithImage_valid(@Value("classpath:test/sofa.jpg") Resource image,
+                                   @Autowired ApplicationContext ctx,
+                                   @Value("${my-values-github-workspace}") String workspace)
             throws Exception {
         String title = "test_product";
         String shortDesc = "asdf";
@@ -97,6 +102,11 @@ class AdminControllerTest {
                 image.getFilename(),
                 MediaType.IMAGE_JPEG_VALUE,
                 image.getInputStream());
+
+        IFileService fileService = ctx.getBean(IFileService.class);
+        String imageLocation = (String) ReflectionTestUtils.getField(fileService, "imageLocation");
+        String resultImageLocation = workspace + imageLocation;
+        ReflectionTestUtils.setField(fileService, "imageLocation", resultImageLocation);
 
         Map<String, Object> model = mvc.perform(multipart("/admin/add-product")
                 .file(file)
@@ -120,7 +130,7 @@ class AdminControllerTest {
 
         assertThat(allByOriginalFilename.isEmpty()).isFalse();
 
-        Path path = Paths.get("product_images").resolve(allByOriginalFilename.get(0).getPath());
+        Path path = Paths.get(resultImageLocation).resolve(allByOriginalFilename.get(0).getPath());
         assertThat(Files.exists(path)).isTrue();
         Files.deleteIfExists(path);
     }
