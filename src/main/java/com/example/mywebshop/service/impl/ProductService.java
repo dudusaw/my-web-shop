@@ -67,7 +67,9 @@ public class ProductService implements IProductService {
         product.setPrice(validProduct.getPrice());
         product.setCategory(category);
         FileMeta fileMeta = fileService.saveImageFileIfExists(validProduct.getImageFile());
-        product.setImageFile(fileMeta);
+        if (fileMeta != null) {
+            product.setImageFiles(List.of(fileMeta));
+        }
         return productRepository.save(product).getId();
     }
 

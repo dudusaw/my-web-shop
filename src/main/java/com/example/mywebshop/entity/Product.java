@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,9 +32,13 @@ public class Product {
     @Column(precision = 12, scale = 2)
     private BigDecimal price;
 
-    @ManyToOne
-    @JoinColumn(name = "image_file_id")
-    private FileMeta imageFile;
+    @ManyToMany
+    @JoinTable(
+            name = "product_to_file",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "file_meta_id")
+    )
+    private List<FileMeta> imageFiles;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
