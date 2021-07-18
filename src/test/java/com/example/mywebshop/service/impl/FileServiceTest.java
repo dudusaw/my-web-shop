@@ -45,7 +45,5 @@ class FileServiceTest {
         Assertions.assertThat(Files.exists(path)).isTrue();
 
         Files.deleteIfExists(path);
-
-        System.out.println();
     }
 }

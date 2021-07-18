@@ -1,13 +1,13 @@
 package com.example.mywebshop.service.impl;
 
-import com.example.mywebshop.config.exception.ProductNotFoundException;
+import com.example.mywebshop.config.exception.NotFoundException;
 import com.example.mywebshop.config.validation.ValidProduct;
-import com.example.mywebshop.entity.FileMeta;
-import com.example.mywebshop.entity.Product;
-import com.example.mywebshop.entity.ProductMajorCategory;
-import com.example.mywebshop.entity.ProductReview;
+import com.example.mywebshop.config.validation.ValidReview;
+import com.example.mywebshop.entity.*;
 import com.example.mywebshop.repository.ProductMajorCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
+import com.example.mywebshop.repository.ProductReviewRepository;
+import com.example.mywebshop.repository.ReviewVoteRepository;
 import com.example.mywebshop.service.IFileService;
 import com.example.mywebshop.service.IProductService;
 import com.example.mywebshop.service.ITextGenerator;
@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
@@ -26,6 +28,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +40,8 @@ public class ProductService implements IProductService {
     @Value("${my-values.longDescriptionMaxSymbols}")
     public int longDescriptionMaxSymbols;
 
+    private final ReviewVoteRepository reviewVoteRepository;
+    private final ProductReviewRepository productReviewRepository;
     private final ProductRepository productRepository;
     private final ProductMajorCategoryRepository majorCategoryRepository;
     private final ITextGenerator textGenerator;
@@ -46,11 +51,15 @@ public class ProductService implements IProductService {
     public ProductService(ProductRepository productRepository,
                           ProductMajorCategoryRepository majorCategoryRepository,
                           ITextGenerator textGenerator,
-                          IFileService fileService) {
+                          IFileService fileService,
+                          ReviewVoteRepository reviewVoteRepository,
+                          ProductReviewRepository productReviewRepository) {
         this.productRepository = productRepository;
         this.majorCategoryRepository = majorCategoryRepository;
         this.textGenerator = textGenerator;
         this.fileService = fileService;
+        this.reviewVoteRepository = reviewVoteRepository;
+        this.productReviewRepository = productReviewRepository;
     }
 
 
@@ -88,6 +97,57 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public void submitReview(Long productId, User user, ValidReview validReview, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) return;
+
+        Product product = productRepository
+                .findById(productId)
+                .orElseThrow(NotFoundException::new);
+        Optional<ProductReview> persistedReview = productReviewRepository.findByUserIdAndProductId(user.getId(), productId);
+        if (persistedReview.isPresent()) {
+            bindingResult.addError(new ObjectError(bindingResult.getObjectName(), "review already exists by this user"));
+            return;
+        }
+        ProductReview newReview = new ProductReview(user, product, validReview.getRating(), validReview.getReview());
+        productReviewRepository.save(newReview);
+    }
+
+    @Override
+    public void deleteReview(Long reviewId, User user) {
+        ProductReview productReview = productReviewRepository
+                .findById(reviewId)
+                .orElseThrow(NotFoundException::new);
+
+        if (user.hasRole("ADMIN") || productReview
+                .getUser()
+                .getUsername()
+                .equals(user.getUsername())) {
+            productReviewRepository.delete(productReview);
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "no rights for that");
+        }
+    }
+
+    @Override
+    public void submitReviewVote(Long reviewId, User user, boolean positive) {
+        ProductReview productReview = productReviewRepository
+                .findById(reviewId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "no such review " + reviewId));
+        Optional<ProductReviewVote> persistedVote = reviewVoteRepository.findByUserIdAndReviewId(user.getId(), productReview.getId());
+        if (persistedVote.isPresent()) {
+            ProductReviewVote vote = persistedVote.get();
+            if (vote.isPositive() == positive) {
+                reviewVoteRepository.delete(vote);
+            } else {
+                vote.setPositive(!vote.isPositive());
+            }
+        } else {
+            ProductReviewVote vote = new ProductReviewVote(user, productReview, positive);
+            reviewVoteRepository.save(vote);
+        }
+    }
+
+    @Override
     public void updateProductRatingFromReviews(Long id) {
         Product product = getByIdOrThrow(id);
         int reviewCount = product.getReviews().size();
@@ -115,7 +175,7 @@ public class ProductService implements IProductService {
     public Product getByIdOrThrow(Long id) {
         return productRepository
                 .findById(id)
-                .orElseThrow(ProductNotFoundException::new);
+                .orElseThrow(NotFoundException::new);
     }
 
     @Override

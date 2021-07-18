@@ -48,6 +48,15 @@ public class User {
         roles = new ArrayList<>();
     }
 
+    public boolean hasRole(String role) {
+        for (UserRole userRole : roles) {
+            if (userRole.getName().equals(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int getCartProductsCount() {
         int c = 0;
         for (CartProduct value : cartProducts.values()) {

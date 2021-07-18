@@ -1,6 +1,5 @@
 package com.example.mywebshop.service.impl;
 
-import com.example.mywebshop.config.exception.ProductNotFoundException;
 import com.example.mywebshop.config.validation.ValidProduct;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.entity.ProductReview;
@@ -9,7 +8,6 @@ import com.example.mywebshop.entity.User;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.service.IProductService;
 import org.apache.commons.lang3.RandomUtils;
-import org.junit.Assert;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

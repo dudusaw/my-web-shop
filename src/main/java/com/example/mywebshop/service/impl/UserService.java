@@ -1,6 +1,6 @@
 package com.example.mywebshop.service.impl;
 
-import com.example.mywebshop.config.exception.ProductNotFoundException;
+import com.example.mywebshop.config.exception.NotFoundException;
 import com.example.mywebshop.config.validation.ValidUser;
 import com.example.mywebshop.entity.CartProduct;
 import com.example.mywebshop.entity.Product;
@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.security.Principal;
 
 @Service
 @Transactional
@@ -46,17 +46,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByPrincipal(Principal principal) {
+        return principal == null ? null : findByUsername(principal.getName());
     }
 
     @Override
-    public User getUserFromSession(HttpSession session) {
-        UserDetails userDetails = (UserDetails) session.getAttribute("user");
-        if (userDetails == null) {
-            return null;
-        }
-        return userRepository.findByUsername(userDetails.getUsername());
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override
@@ -101,7 +97,7 @@ public class UserService implements IUserService {
     private Product findProductOrThrow(Long id) {
         return productRepository
                 .findById(id)
-                .orElseThrow(ProductNotFoundException::new);
+                .orElseThrow(NotFoundException::new);
     }
 
     @Override

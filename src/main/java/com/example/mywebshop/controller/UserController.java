@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
+import java.security.Principal;
 
 @Controller
 public class UserController {
@@ -21,26 +23,25 @@ public class UserController {
     }
 
     @GetMapping("/cart")
-    public String cart(HttpServletRequest request,
+    public String cart(@NotNull Principal principal,
                        Model ui) {
-        User user = userService.getUserFromSession(request.getSession());
+        User user = userService.findByPrincipal(principal);
         ui.addAttribute("totalPrice", userService.calculateTotalCartPrice(user));
-        ui.addAttribute("user", user);
         return "cart";
     }
 
     @RequestMapping(value = "/cart/add", method = {RequestMethod.GET, RequestMethod.POST})
-    public String cartAdd(HttpServletRequest request,
+    public String cartAdd(@NotNull Principal principal,
                           @RequestParam Long id) {
-        User user = userService.getUserFromSession(request.getSession());
+        User user = userService.findByPrincipal(principal);
         userService.addProductToUserCart(user, id, 1);
         return "redirect:/products";
     }
 
     @GetMapping("/cart/remove")
-    public String cartRemove(HttpServletRequest request,
+    public String cartRemove(@NotNull Principal principal,
                           @RequestParam Long id) {
-        User user = userService.getUserFromSession(request.getSession());
+        User user = userService.findByPrincipal(principal);
         userService.removeProductFromUserCart(user, id);
         return "redirect:/cart";
     }

@@ -48,9 +48,16 @@ nav {
   height: 8px;
 }
 
-.rating-star {
+.my-icon {
   width: 1.75rem;
+}
+
+.rating-star {
   color: #ffbb33;
+}
+
+.details-block {
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 /*# sourceMappingURL=my-styles.css.map */
