@@ -60,7 +60,7 @@ public class ProductController {
         productService.submitReview(productId, user, validReview, bindingResult);
         ui.addAttribute("bindingResult", bindingResult);
         ui.addAttribute("product", product);
-        return "product-details";
+        return "redirect:/products/"+productId;
     }
 
     @GetMapping("/act/delete-review/{productId}/{reviewId}")

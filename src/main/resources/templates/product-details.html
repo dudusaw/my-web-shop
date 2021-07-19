@@ -38,21 +38,21 @@
                     <div class="row">
                         <p class="mb-2 col">By: <span class="text-warning bg-dark rounded-3 px-2 py-1" th:text="${review.user.username}">asdf</span></p>
                         <div class="col-4">
-                            <a href="#" th:href="@{/products/act/vote-positive/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}"
-                               class="text-decoration-none link-success me-2">
+                            <div th:attr="onclick=|sendRequest('@{/products/act/vote-positive/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', false)|"
+                                 class="link-success me-2 d-inline-block" style="cursor: pointer">
                                 <div th:replace="~{icon-fragments :: thumb-up}"></div>
                                 <span th:text="${review.positiveVoteCount}">asd</span>
-                            </a>
-                            <a href="#" th:href="@{/products/act/vote-negative/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}"
-                               class="text-decoration-none link-danger me-2">
+                            </div>
+                            <div th:attr="onclick=|sendRequest('@{/products/act/vote-negative/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', false)|"
+                               class="link-danger me-2 d-inline-block" style="cursor: pointer">
                                 <div th:replace="~{icon-fragments :: thumb-down}"></div>
                                 <span th:text="${review.negativeVoteCount}">asd</span>
-                            </a>
-                            <a href="" th:if="${(user != null && review.user.id == user.id) || #authorization.expression('hasRole(''ADMIN'')')}"
-                               th:href="@{/products/act/delete-review/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}"
-                               class="text-decoration-none link-danger">
+                            </div>
+                            <div th:if="${(user != null && review.user.id == user.id) || #authorization.expression('hasRole(''ADMIN'')')}"
+                                 th:attr="onclick=|sendRequest('@{/products/act/delete-review/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', true)|"
+                                 class="link-danger d-inline-block" style="cursor: pointer">
                                 <div th:replace="~{icon-fragments :: cross}"></div>
-                            </a>
+                            </div>
                         </div>
                     </div>
                     <p class="mb-0" th:text="${review.review}">Review text</p>
@@ -82,6 +82,7 @@
     </div>
 </div>
 
+<script th:src="@{/scripts/send-request.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
         crossorigin="anonymous"></script>
