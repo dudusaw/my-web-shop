@@ -1,5 +1,7 @@
-package com.example.mywebshop.config.validation;
+package com.example.mywebshop.dto;
 
+import com.example.mywebshop.config.validation.FieldMatchConstraint;
+import com.example.mywebshop.config.validation.UniqueUsernameConstraint;
 import lombok.Data;
 
 import javax.validation.constraints.Email;

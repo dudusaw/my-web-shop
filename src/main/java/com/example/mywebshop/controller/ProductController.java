@@ -1,6 +1,6 @@
 package com.example.mywebshop.controller;
 
-import com.example.mywebshop.config.validation.ValidReview;
+import com.example.mywebshop.dto.ValidReview;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.entity.User;
 import com.example.mywebshop.service.IProductService;
@@ -42,7 +42,8 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public String productDetails(@PathVariable Long productId, Model ui) {
+    public String productDetails(@PathVariable Long productId,
+                                 Model ui) {
         Product product = productService.getByIdOrThrow(productId);
         productService.initProductReviewVotes(product);
         ui.addAttribute("product", product);
@@ -58,9 +59,9 @@ public class ProductController {
         User user = userService.findByPrincipal(principal);
         Product product = productService.getByIdOrThrow(productId);
         productService.submitReview(productId, user, validReview, bindingResult);
-        ui.addAttribute("bindingResult", bindingResult);
         ui.addAttribute("product", product);
-        return "redirect:/products/"+productId;
+        ui.addAttribute("bindingResult", bindingResult);
+        return "product-details";
     }
 
     @GetMapping("/act/delete-review/{productId}/{reviewId}")
@@ -69,7 +70,7 @@ public class ProductController {
                                @NotNull Principal principal) {
         User user = userService.findByPrincipal(principal);
         productService.deleteReview(reviewId, user);
-        return "redirect:/products/"+productId;
+        return "redirect:/products/" + productId;
     }
 
     @GetMapping("/act/vote-positive/{productId}/{reviewId}")
@@ -78,7 +79,7 @@ public class ProductController {
                                            @NotNull Principal principal) {
         User user = userService.findByPrincipal(principal);
         productService.submitReviewVote(reviewId, user, true);
-        return "redirect:/products/"+productId;
+        return "redirect:/products/" + productId;
     }
 
     @GetMapping("/act/vote-negative/{productId}/{reviewId}")
@@ -87,6 +88,6 @@ public class ProductController {
                                            @NotNull Principal principal) {
         User user = userService.findByPrincipal(principal);
         productService.submitReviewVote(reviewId, user, false);
-        return "redirect:/products/"+productId;
+        return "redirect:/products/" + productId;
     }
 }

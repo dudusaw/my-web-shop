@@ -1,4 +1,4 @@
-package com.example.mywebshop.config.validation;
+package com.example.mywebshop.dto;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class ValidProduct {
@@ -22,7 +23,7 @@ public class ValidProduct {
     @NotNull(message = "description is empty")
     private String description;
 
-    private MultipartFile imageFile;
+    private List<MultipartFile> imageFiles;
 
     @NotNull(message = "price is empty")
     private BigDecimal price;

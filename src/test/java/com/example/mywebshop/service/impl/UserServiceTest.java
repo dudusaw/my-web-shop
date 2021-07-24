@@ -1,6 +1,6 @@
 package com.example.mywebshop.service.impl;
 
-import com.example.mywebshop.config.validation.ValidUser;
+import com.example.mywebshop.dto.ValidUser;
 import com.example.mywebshop.entity.CartProduct;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.entity.User;

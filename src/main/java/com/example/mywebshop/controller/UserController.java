@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 
@@ -31,18 +30,16 @@ public class UserController {
     }
 
     @RequestMapping(value = "/cart/add", method = {RequestMethod.GET, RequestMethod.POST})
-    public String cartAdd(@NotNull Principal principal,
-                          @RequestParam Long id) {
+    public void cartAdd(@NotNull Principal principal,
+                              @RequestParam Long id) {
         User user = userService.findByPrincipal(principal);
         userService.addProductToUserCart(user, id, 1);
-        return "redirect:/products";
     }
 
     @GetMapping("/cart/remove")
-    public String cartRemove(@NotNull Principal principal,
+    public void cartRemove(@NotNull Principal principal,
                           @RequestParam Long id) {
         User user = userService.findByPrincipal(principal);
         userService.removeProductFromUserCart(user, id);
-        return "redirect:/cart";
     }
 }

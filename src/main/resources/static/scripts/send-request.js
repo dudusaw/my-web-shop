@@ -1,14 +1,22 @@
+'use strict'
+
 function sendRequest(url, shouldConfirm) {
     if (shouldConfirm) {
         let confirmed = confirm('confirm the action');
         if (confirmed) {
-            fetch(url).then(value => {
-                location.reload();
-            });
+            fetchUrl(url);
         }
     } else {
-        fetch(url).then(value => {
-            location.reload();
-        });
+        fetchUrl(url);
     }
+}
+
+function fetchUrl(url) {
+    fetch(url).then(value => {
+        if (value.redirected && value.url !== location.href) {
+            location.href = value.url;
+        } else {
+            location.reload();
+        }
+    });
 }

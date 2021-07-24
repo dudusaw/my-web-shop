@@ -1,14 +1,16 @@
 package com.example.mywebshop.service.impl;
 
 import com.example.mywebshop.config.exception.NotFoundException;
-import com.example.mywebshop.config.validation.ValidProduct;
-import com.example.mywebshop.config.validation.ValidReview;
+import com.example.mywebshop.dto.FileTransferInfo;
+import com.example.mywebshop.dto.ValidProduct;
+import com.example.mywebshop.dto.ValidReview;
 import com.example.mywebshop.entity.*;
 import com.example.mywebshop.repository.ProductMajorCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.repository.ProductReviewRepository;
 import com.example.mywebshop.repository.ReviewVoteRepository;
 import com.example.mywebshop.service.IFileService;
+import com.example.mywebshop.service.IImageCompressor;
 import com.example.mywebshop.service.IProductService;
 import com.example.mywebshop.service.ITextGenerator;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -21,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
@@ -29,6 +32,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +49,7 @@ public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final ProductMajorCategoryRepository majorCategoryRepository;
     private final ITextGenerator textGenerator;
+    private final IImageCompressor imageCompressor;
     private final IFileService fileService;
 
     @Autowired
@@ -53,13 +58,15 @@ public class ProductService implements IProductService {
                           ITextGenerator textGenerator,
                           IFileService fileService,
                           ReviewVoteRepository reviewVoteRepository,
-                          ProductReviewRepository productReviewRepository) {
+                          ProductReviewRepository productReviewRepository,
+                          IImageCompressor imageCompressor) {
         this.productRepository = productRepository;
         this.majorCategoryRepository = majorCategoryRepository;
         this.textGenerator = textGenerator;
         this.fileService = fileService;
         this.reviewVoteRepository = reviewVoteRepository;
         this.productReviewRepository = productReviewRepository;
+        this.imageCompressor = imageCompressor;
     }
 
 
@@ -75,11 +82,21 @@ public class ProductService implements IProductService {
         product.setDescription(validProduct.getDescription());
         product.setPrice(validProduct.getPrice());
         product.setCategory(category);
-        FileMeta fileMeta = fileService.saveImageFileIfExists(validProduct.getImageFile());
-        if (fileMeta != null) {
-            product.setImageFiles(List.of(fileMeta));
-        }
+        product.setImageFiles(new ArrayList<>());
+
+        uploadAndAddImagesToProduct(validProduct.getImageFiles(), product);
+
         return productRepository.save(product).getId();
+    }
+
+    private void uploadAndAddImagesToProduct(List<MultipartFile> images, Product product) {
+        for (MultipartFile imageFile : images) {
+            String fullFilePath = UUID.randomUUID().toString();
+            FileTransferInfo fileTransferInfo = FileTransferInfo.createFrom(fullFilePath, imageFile);
+            fileService.uploadAsStream(fileTransferInfo);
+            FileMeta fileMeta = fileService.saveToDB(fileTransferInfo);
+            product.getImageFiles().add(fileMeta);
+        }
     }
 
     @Override

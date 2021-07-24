@@ -2,20 +2,17 @@ package com.example.mywebshop.controller;
 
 import com.example.mywebshop.entity.FileMeta;
 import com.example.mywebshop.entity.Product;
-import com.example.mywebshop.repository.FileStoreRepository;
+import com.example.mywebshop.repository.FileMetaRepository;
 import com.example.mywebshop.repository.ProductRepository;
-import com.example.mywebshop.service.IFileService;
 import com.example.mywebshop.service.IProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BindingResult;
 
@@ -41,13 +38,13 @@ class AdminControllerTest {
     private MockMvc mvc;
     private ProductRepository productRepository;
     private IProductService productService;
-    private FileStoreRepository fileRepository;
+    private FileMetaRepository fileRepository;
 
     @Autowired
     AdminControllerTest(MockMvc mvc,
                         ProductRepository productRepository,
                         IProductService productService,
-                        FileStoreRepository fileRepository) {
+                        FileMetaRepository fileRepository) {
         this.mvc = mvc;
         this.productRepository = productRepository;
         this.productService = productService;

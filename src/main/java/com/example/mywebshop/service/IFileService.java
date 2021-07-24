@@ -1,8 +1,18 @@
 package com.example.mywebshop.service;
 
+import com.example.mywebshop.dto.FileTransferInfo;
 import com.example.mywebshop.entity.FileMeta;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface IFileService {
-    FileMeta saveImageFileIfExists(MultipartFile imageFile);
+    void deleteFile(String filePath);
+
+    FileTransferInfo getFile(String filePath);
+
+    void uploadAsStream(FileTransferInfo file);
+
+    FileMeta saveToDB(FileTransferInfo file);
+
+    void updateFileTags(Long fileMetaId);
+
+    void updateFileTags(String filePath);
 }

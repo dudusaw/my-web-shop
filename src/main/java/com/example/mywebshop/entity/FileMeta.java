@@ -21,8 +21,11 @@ public class FileMeta {
 
     private String originalFilename;
 
-    public FileMeta(String path, String originalFilename) {
+    private String contentType;
+
+    public FileMeta(String path, String originalFilename, String contentType) {
         this.path = path;
         this.originalFilename = originalFilename;
+        this.contentType = contentType;
     }
 }

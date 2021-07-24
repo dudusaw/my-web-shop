@@ -23,65 +23,88 @@
             <img src="#" alt="..." th:each="img : ${product.imageFiles}" th:src="@{/file/{imgPath}(imgPath=${img.path})}">
         </div>
         <div class="col">
-            <h1 class="my-5 display-3" th:text="${product.title}">Title</h1>
-            <h2 class="mb-2" th:text="|Price: $${product.price}|">Price</h2>
-            <h2 class="mb-5" th:text="|Rating: ${product.rating}|">Rating</h2>
-            <p class="mb-5 fs-3" style="white-space: pre-line;" th:text="${product.description}">Description</p>
-            <hr class="mb-4">
-            <h2 class="mb-4" th:text="|${product.reviews.size()} Reviews|">Reviews</h2>
-            <div th:each="review : ${product.reviews}" class="row border border-primary rounded-3 mb-3 p-4 fs-5">
-                <div class="col-2 d-flex align-items-center justify-content-center border-end border-secondary">
-                    <div class="me-1" th:insert="~{icon-fragments :: 'star-fill'}"></div>
-                    <h1 class="me-2 fs-1" th:text="${review.rating}">3</h1>
-                </div>
-                <div class="col">
-                    <div class="row">
-                        <p class="mb-2 col">By: <span class="text-warning bg-dark rounded-3 px-2 py-1" th:text="${review.user.username}">asdf</span></p>
-                        <div class="col-4">
-                            <div th:attr="onclick=|sendRequest('@{/products/act/vote-positive/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', false)|"
-                                 class="link-success me-2 d-inline-block" style="cursor: pointer">
-                                <div th:replace="~{icon-fragments :: thumb-up}"></div>
-                                <span th:text="${review.positiveVoteCount}">asd</span>
-                            </div>
-                            <div th:attr="onclick=|sendRequest('@{/products/act/vote-negative/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', false)|"
-                               class="link-danger me-2 d-inline-block" style="cursor: pointer">
-                                <div th:replace="~{icon-fragments :: thumb-down}"></div>
-                                <span th:text="${review.negativeVoteCount}">asd</span>
-                            </div>
-                            <div th:if="${(user != null && review.user.id == user.id) || #authorization.expression('hasRole(''ADMIN'')')}"
-                                 th:attr="onclick=|sendRequest('@{/products/act/delete-review/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', true)|"
-                                 class="link-danger d-inline-block" style="cursor: pointer">
-                                <div th:replace="~{icon-fragments :: cross}"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="mb-0" th:text="${review.review}">Review text</p>
+            <div class="row justify-content-between">
+                <h1 class="col-8 my-5 display-6" th:text="${product.title}">Title</h1>
+                <div class="col align-self-center">
+                    <button th:attr="onclick=|sendRequest('@{/cart/add(id=${product.id})}', false)|"
+                            class="btn btn-lg btn-primary">Add to cart</button>
                 </div>
             </div>
-            <form method="post" class="border border-primary rounded-3 p-3" th:action="@{/products/act/submit-review/{productId}(productId=${product.id})}">
-                <h2>Leave a review:</h2>
-                <div th:if="${bindingResult != null && bindingResult.hasErrors()}" class="alert alert-danger">
-                    <p class="mb-1" th:each="err : ${bindingResult.getAllErrors()}" th:text="${err.getDefaultMessage()}"></p>
+            <h2 class="mb-2" th:text="|Price: $${product.price}|">Price</h2>
+            <h2 class="mb-5" th:text="|Rating: ${product.rating}|">Rating</h2>
+            <ul class="nav nav-pills mb-4">
+                <li class="nav-item">
+                    <div id="descriptionTab" onclick="changeTab('description')" class="nav-link active fs-5" style="cursor: pointer">Description</div>
+                </li>
+                <li class="nav-item">
+                    <div id="characteristicsTab" onclick="changeTab('characteristics')" class="nav-link fs-5" style="cursor: pointer">Characteristics</div>
+                </li>
+                <li class="nav-item">
+                    <div id="reviewsTab" onclick="changeTab('reviews')" class="nav-link fs-5" style="cursor: pointer">Reviews</div>
+                </li>
+            </ul>
+            <div id="description">
+                <p class="mb-5 fs-3" style="white-space: pre-line;" th:text="${product.description}">Description</p>
+            </div>
+            <div id="characteristics">characteristics</div>
+            <div id="reviews">
+                <h2 class="mb-4" th:text="|${product.reviews.size()} Reviews|">Reviews</h2>
+                <div th:each="review : ${product.reviews}" class="row border border-primary rounded-3 mb-3 p-4 fs-5">
+                    <div class="col-2 d-flex align-items-center justify-content-center border-end border-secondary">
+                        <div class="me-1" th:insert="~{icon-fragments :: 'star-fill'}"></div>
+                        <h1 class="me-2 fs-1" th:text="${review.rating}">3</h1>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <p class="mb-2 col">By: <span class="text-warning bg-dark rounded-3 px-2 py-1" th:text="${review.user.username}">asdf</span></p>
+                            <div class="col-4">
+                                <div th:attr="onclick=|sendRequest('@{/products/act/vote-positive/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', false)|"
+                                     class="link-success me-2 d-inline-block" style="cursor: pointer">
+                                    <div th:replace="~{icon-fragments :: thumb-up}"></div>
+                                    <span th:text="${review.positiveVoteCount}">asd</span>
+                                </div>
+                                <div th:attr="onclick=|sendRequest('@{/products/act/vote-negative/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', false)|"
+                                     class="link-danger me-2 d-inline-block" style="cursor: pointer">
+                                    <div th:replace="~{icon-fragments :: thumb-down}"></div>
+                                    <span th:text="${review.negativeVoteCount}">asd</span>
+                                </div>
+                                <div th:if="${(user != null && review.user.id == user.id) || #authorization.expression('hasRole(''ADMIN'')')}"
+                                     th:attr="onclick=|sendRequest('@{/products/act/delete-review/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', true)|"
+                                     class="link-danger d-inline-block" style="cursor: pointer">
+                                    <div th:replace="~{icon-fragments :: cross}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mb-0" th:text="${review.review}">Review text</p>
+                    </div>
                 </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">Rating</span>
-                    <select class="form-select" name="rating">
-                        <option selected value="5">5</option>
-                        <option value="4">4</option>
-                        <option value="3">3</option>
-                        <option value="2">2</option>
-                        <option value="1">1</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <textarea name="review" class="form-control" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn btn-lg btn-primary my-3">Submit</button>
-            </form>
+                <form method="post" class="border border-primary rounded-3 p-3" th:action="@{/products/act/submit-review/{productId}(productId=${product.id})}">
+                    <h2>Leave a review:</h2>
+                    <div th:if="${bindingResult != null && bindingResult.hasErrors()}" class="alert alert-danger">
+                        <p class="mb-1" th:each="err : ${bindingResult.getAllErrors()}" th:text="${err.getDefaultMessage()}"></p>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Rating</span>
+                        <select class="form-select" name="rating">
+                            <option selected value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <textarea name="review" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-lg btn-primary my-3">Submit</button>
+                </form>
+            </div>
+            <hr class="mb-5">
         </div>
     </div>
 </div>
 
+<script th:src="@{/scripts/details-tab-change.js}"></script>
 <script th:src="@{/scripts/send-request.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
