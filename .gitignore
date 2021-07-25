@@ -34,3 +34,4 @@ build/
 
 /product_images/
 /session-info/
+/src/main/resources/keystore/

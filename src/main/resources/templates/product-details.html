@@ -20,7 +20,27 @@
 <div class="container mt-5">
     <div class="row details-block rounded-3 mb-5 p-3">
         <div class="col-4 me-2">
-            <img src="#" alt="..." th:each="img : ${product.imageFiles}" th:src="@{/file/{imgPath}(imgPath=${img.path})}">
+            <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button th:each="img : ${product.imageFiles}" th:attr="data-bs-slide-to=${imgStat.index},aria-current=${imgStat.first}"
+                            th:classappend="${imgStat.first} ? 'active' : _"
+                            type="button" data-bs-target="#carousel" data-bs-slide-to="0" aria-label="Slide 1"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item" th:each="img : ${product.imageFiles}" th:classappend="${imgStat.first} ? 'active' : _">
+                        <img th:src="@{/file/{filePath}(filePath=${img.path})}"
+                             src="https://i11.fotocdn.net/s125/e9ee85d9dc7f743d/public_pin_l/2848090158.jpg" class="d-block w-100 rounded-3" alt="...">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
         </div>
         <div class="col">
             <div class="row justify-content-between">

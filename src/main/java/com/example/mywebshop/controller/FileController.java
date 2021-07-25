@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -22,6 +21,11 @@ public class FileController {
 
     private final IFileService fileService;
 
+    private static final CacheControl cacheControl = CacheControl
+            .maxAge(365, TimeUnit.DAYS)
+            .noTransform()
+            .mustRevalidate();
+
     @Autowired
     public FileController(IFileService fileService) {
         this.fileService = fileService;
@@ -32,12 +36,9 @@ public class FileController {
             throws IOException {
         String pattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         String path = new AntPathMatcher().extractPathWithinPattern(pattern, request.getServletPath());
-        CacheControl cacheControl = CacheControl.maxAge(60, TimeUnit.MINUTES)
-                .noTransform()
-                .mustRevalidate();
         FileTransferInfo file = fileService.getFile(path);
-        byte[] bytes = StreamUtils.copyToByteArray(file.getStream());
-        ByteArrayResource resultResource = new ByteArrayResource(bytes);
+        ByteArrayResource resultResource = new ByteArrayResource(file.getStream().readAllBytes());
+        file.getStream().close();
         return ResponseEntity
                 .ok()
                 .cacheControl(cacheControl)

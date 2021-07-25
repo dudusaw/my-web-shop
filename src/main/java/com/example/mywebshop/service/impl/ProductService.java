@@ -76,6 +76,13 @@ public class ProductService implements IProductService {
                 .findByName(validProduct.getCategory())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "category not found"));
 
+        Product product = parseProduct(validProduct, category);
+        uploadAndAddImagesToProduct(validProduct.getImageFiles(), product);
+
+        return productRepository.save(product).getId();
+    }
+
+    private Product parseProduct(ValidProduct validProduct, ProductMajorCategory category) {
         Product product = new Product();
         product.setTitle(validProduct.getTitle());
         product.setShortDescription(validProduct.getShortDescription());
@@ -83,16 +90,14 @@ public class ProductService implements IProductService {
         product.setPrice(validProduct.getPrice());
         product.setCategory(category);
         product.setImageFiles(new ArrayList<>());
-
-        uploadAndAddImagesToProduct(validProduct.getImageFiles(), product);
-
-        return productRepository.save(product).getId();
+        return product;
     }
 
     private void uploadAndAddImagesToProduct(List<MultipartFile> images, Product product) {
         for (MultipartFile imageFile : images) {
             String fullFilePath = UUID.randomUUID().toString();
             FileTransferInfo fileTransferInfo = FileTransferInfo.createFrom(fullFilePath, imageFile);
+            imageCompressor.compressImageIfSupported(fileTransferInfo);
             fileService.uploadAsStream(fileTransferInfo);
             FileMeta fileMeta = fileService.saveToDB(fileTransferInfo);
             product.getImageFiles().add(fileMeta);
@@ -116,10 +121,10 @@ public class ProductService implements IProductService {
     @Override
     public void submitReview(Long productId, User user, ValidReview validReview, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return;
-
         Product product = productRepository
                 .findById(productId)
                 .orElseThrow(NotFoundException::new);
+
         Optional<ProductReview> persistedReview = productReviewRepository.findByUserIdAndProductId(user.getId(), productId);
         if (persistedReview.isPresent()) {
             bindingResult.addError(new ObjectError(bindingResult.getObjectName(), "review already exists by this user"));
@@ -212,10 +217,8 @@ public class ProductService implements IProductService {
         String title = "Product " + i + RandomStringUtils.randomAlphabetic(2, 2);
         String rndShortDescription = textGenerator.generateText(1, TextGenLength.SHORT);
         String rndLongDescription = textGenerator.generateText(3, TextGenLength.LONG);
-        rndShortDescription =
-                rndShortDescription.substring(0, Math.min(rndShortDescription.length(), shortDescriptionMaxSymbols)).trim();
-        rndLongDescription =
-                rndLongDescription.substring(0, Math.min(rndLongDescription.length(), longDescriptionMaxSymbols)).trim();
+        rndShortDescription = rndShortDescription.substring(0, Math.min(rndShortDescription.length(), shortDescriptionMaxSymbols)).trim();
+        rndLongDescription = rndLongDescription.substring(0, Math.min(rndLongDescription.length(), longDescriptionMaxSymbols)).trim();
         double rating = RandomUtils.nextDouble(1, 5);
         BigDecimal price = BigDecimal.valueOf(RandomUtils.nextDouble(1, 500));
         rating = BigDecimal.valueOf(rating).setScale(1, RoundingMode.HALF_UP).doubleValue();

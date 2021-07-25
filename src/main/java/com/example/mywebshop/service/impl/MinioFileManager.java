@@ -7,16 +7,20 @@ import com.example.mywebshop.repository.FileMetaRepository;
 import com.example.mywebshop.service.IFileService;
 import com.example.mywebshop.utils.FileUtil;
 import io.minio.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class MinioFileManager implements IFileService {
 
     private FileMetaRepository fileMetaRepository;
@@ -24,12 +28,18 @@ public class MinioFileManager implements IFileService {
     private MinioClient minioClient;
     private String bucketName;
 
+    @Value("${minio.keep-object-tags}")
+    private boolean keepObjectTags;
+
     private static final String DEFAULT_CONTENT_TYPE = MediaType.TEXT_PLAIN_VALUE;
+
+    // tag keys
     private static final String CONTENT_TYPE = "contentType";
     private static final String ORIGINAL_FILE_NAME = "originalFileName";
 
     @Autowired
-    public MinioFileManager(FileMetaRepository fileMetaRepository, @Value("${minio.endpoint}") String endpoint,
+    public MinioFileManager(FileMetaRepository fileMetaRepository,
+                            @Value("${minio.endpoint}") String endpoint,
                             @Value("${minio.username}") String username,
                             @Value("${minio.password}") String password,
                             @Value("${minio.bucket-name}") String bucketName) throws Exception {
@@ -63,6 +73,7 @@ public class MinioFileManager implements IFileService {
                     .bucket(bucketName)
                     .object(filePath)
                     .build());
+            fileMetaRepository.findByPath(filePath).ifPresent(meta -> fileMetaRepository.delete(meta));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,18 +86,11 @@ public class MinioFileManager implements IFileService {
                     .bucket(bucketName)
                     .object(filePath)
                     .build());
-            Map<String, String> objectTags = minioClient.getObjectTags(GetObjectTagsArgs.builder()
-                    .bucket(bucketName)
-                    .object(filePath)
-                    .build()).get();
-            String fileName = objectTags.get(ORIGINAL_FILE_NAME);
-            String contentType = objectTags.get(CONTENT_TYPE);
-            if (fileName == null) {
-                fileName = FileUtil.getFileNameFromPath(filePath);
-            }
-            if (contentType == null) {
-                contentType = DEFAULT_CONTENT_TYPE;
-            }
+            FileMeta fileMeta = fileMetaRepository
+                    .findByPath(filePath)
+                    .orElseThrow();
+            String fileName = fileMeta.getOriginalFilename();
+            String contentType = fileMeta.getContentType();
 
             return new FileTransferInfo(
                     objectResponse,
@@ -97,27 +101,28 @@ public class MinioFileManager implements IFileService {
                     -1
             );
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-        return null;
     }
 
     @Override
     public void uploadAsStream(FileTransferInfo file) {
         try {
-            var meta = constructTags(
-                    Pair.of(CONTENT_TYPE, file.getContentType()),
-                    Pair.of(ORIGINAL_FILE_NAME, file.getOriginalFileName())
-            );
             long contentLength = file.getContentLength() > 0 ? file.getContentLength() : -1;
             long partSize = contentLength > 0 ? -1 : 10485760;
-            minioClient.putObject(PutObjectArgs.builder()
+            PutObjectArgs.Builder builder = PutObjectArgs.builder()
                     .bucket(bucketName)
                     .object(file.getFilePath())
                     .stream(file.getStream(), contentLength, partSize)
-                    .contentType(file.getContentType())
-                    .tags(meta)
-                    .build());
+                    .contentType(file.getContentType());
+            if (keepObjectTags) {
+                var meta = constructTagsMap(
+                        Pair.of(CONTENT_TYPE, file.getContentType()),
+                        Pair.of(ORIGINAL_FILE_NAME, file.getOriginalFileName())
+                );
+                builder.tags(meta);
+            }
+            minioClient.putObject(builder.build());
             file.getStream().close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,7 +156,7 @@ public class MinioFileManager implements IFileService {
     }
 
     private void updateFileTags(FileMeta fileMeta) {
-        Map<String, String> tags = constructTags(
+        Map<String, String> tags = constructTagsMap(
                 Pair.of(CONTENT_TYPE, fileMeta.getContentType()),
                 Pair.of(ORIGINAL_FILE_NAME, fileMeta.getOriginalFilename())
         );
@@ -167,7 +172,7 @@ public class MinioFileManager implements IFileService {
     }
 
     @SafeVarargs
-    private Map<String, String> constructTags(Pair<String, String>... pairs) {
+    private Map<String, String> constructTagsMap(Pair<String, String>... pairs) {
         HashMap<String, String> map = new HashMap<>();
         for (var pair : pairs) {
             map.put(pair.getKey(), pair.getValue());
