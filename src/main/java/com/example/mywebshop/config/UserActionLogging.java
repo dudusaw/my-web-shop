@@ -1,6 +1,6 @@
 package com.example.mywebshop.config;
 
-import com.example.mywebshop.config.validation.ValidUser;
+import com.example.mywebshop.dto.ValidUser;
 import com.example.mywebshop.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;

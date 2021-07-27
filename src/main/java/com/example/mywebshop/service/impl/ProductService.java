@@ -1,14 +1,16 @@
 package com.example.mywebshop.service.impl;
 
-import com.example.mywebshop.config.exception.ProductNotFoundException;
-import com.example.mywebshop.config.validation.ValidProduct;
-import com.example.mywebshop.entity.FileMeta;
-import com.example.mywebshop.entity.Product;
-import com.example.mywebshop.entity.ProductMajorCategory;
-import com.example.mywebshop.entity.ProductReview;
+import com.example.mywebshop.config.exception.NotFoundException;
+import com.example.mywebshop.dto.FileTransferInfo;
+import com.example.mywebshop.dto.ValidProduct;
+import com.example.mywebshop.dto.ValidReview;
+import com.example.mywebshop.entity.*;
 import com.example.mywebshop.repository.ProductMajorCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
+import com.example.mywebshop.repository.ProductReviewRepository;
+import com.example.mywebshop.repository.ReviewVoteRepository;
 import com.example.mywebshop.service.IFileService;
+import com.example.mywebshop.service.IFileCompressor;
 import com.example.mywebshop.service.IProductService;
 import com.example.mywebshop.service.ITextGenerator;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -19,6 +21,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
@@ -26,6 +31,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,20 +44,29 @@ public class ProductService implements IProductService {
     @Value("${my-values.longDescriptionMaxSymbols}")
     public int longDescriptionMaxSymbols;
 
+    private final ProductReviewRepository productReviewRepository;
+    private final ReviewVoteRepository reviewVoteRepository;
     private final ProductRepository productRepository;
     private final ProductMajorCategoryRepository majorCategoryRepository;
     private final ITextGenerator textGenerator;
+    private final IFileCompressor imageCompressor;
     private final IFileService fileService;
 
     @Autowired
     public ProductService(ProductRepository productRepository,
                           ProductMajorCategoryRepository majorCategoryRepository,
                           ITextGenerator textGenerator,
-                          IFileService fileService) {
+                          IFileService fileService,
+                          ReviewVoteRepository reviewVoteRepository,
+                          ProductReviewRepository productReviewRepository,
+                          IFileCompressor imageCompressor) {
         this.productRepository = productRepository;
         this.majorCategoryRepository = majorCategoryRepository;
         this.textGenerator = textGenerator;
         this.fileService = fileService;
+        this.reviewVoteRepository = reviewVoteRepository;
+        this.productReviewRepository = productReviewRepository;
+        this.imageCompressor = imageCompressor;
     }
 
 
@@ -60,17 +76,33 @@ public class ProductService implements IProductService {
                 .findByName(validProduct.getCategory())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "category not found"));
 
+        Product product = parseProduct(validProduct, category);
+        uploadAndAddImagesToProduct(validProduct.getImageFiles(), product);
+
+        return productRepository.save(product).getId();
+    }
+
+    private Product parseProduct(ValidProduct validProduct, ProductMajorCategory category) {
         Product product = new Product();
         product.setTitle(validProduct.getTitle());
         product.setShortDescription(validProduct.getShortDescription());
         product.setDescription(validProduct.getDescription());
         product.setPrice(validProduct.getPrice());
         product.setCategory(category);
-        FileMeta fileMeta = fileService.saveImageFileIfExists(validProduct.getImageFile());
-        if (fileMeta != null) {
-            product.setImageFiles(List.of(fileMeta));
+        product.setImageFiles(new ArrayList<>());
+        return product;
+    }
+
+    private void uploadAndAddImagesToProduct(List<MultipartFile> images, Product product) {
+        if (images == null) return;
+        for (MultipartFile imageFile : images) {
+            String fullFilePath = UUID.randomUUID().toString();
+            FileTransferInfo fileTransferInfo = FileTransferInfo.createFrom(fullFilePath, imageFile);
+            imageCompressor.compressImageIfSupported(fileTransferInfo);
+            fileService.uploadAsStream(fileTransferInfo);
+            FileMeta fileMeta = fileService.saveToDB(fileTransferInfo);
+            product.getImageFiles().add(fileMeta);
         }
-        return productRepository.save(product).getId();
     }
 
     @Override
@@ -88,8 +120,8 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void updateProductRatingFromReviews(Long id) {
-        Product product = getByIdOrThrow(id);
+    public void updateProductRatingFromReviews(Long productId) {
+        Product product = getByIdOrThrow(productId);
         int reviewCount = product.getReviews().size();
         double ratingSum = product
                 .getReviews()
@@ -112,10 +144,10 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product getByIdOrThrow(Long id) {
+    public Product getByIdOrThrow(Long productId) {
         return productRepository
-                .findById(id)
-                .orElseThrow(ProductNotFoundException::new);
+                .findById(productId)
+                .orElseThrow(NotFoundException::new);
     }
 
     @Override
@@ -135,10 +167,8 @@ public class ProductService implements IProductService {
         String title = "Product " + i + RandomStringUtils.randomAlphabetic(2, 2);
         String rndShortDescription = textGenerator.generateText(1, TextGenLength.SHORT);
         String rndLongDescription = textGenerator.generateText(3, TextGenLength.LONG);
-        rndShortDescription =
-                rndShortDescription.substring(0, Math.min(rndShortDescription.length(), shortDescriptionMaxSymbols)).trim();
-        rndLongDescription =
-                rndLongDescription.substring(0, Math.min(rndLongDescription.length(), longDescriptionMaxSymbols)).trim();
+        rndShortDescription = rndShortDescription.substring(0, Math.min(rndShortDescription.length(), shortDescriptionMaxSymbols)).trim();
+        rndLongDescription = rndLongDescription.substring(0, Math.min(rndLongDescription.length(), longDescriptionMaxSymbols)).trim();
         double rating = RandomUtils.nextDouble(1, 5);
         BigDecimal price = BigDecimal.valueOf(RandomUtils.nextDouble(1, 500));
         rating = BigDecimal.valueOf(rating).setScale(1, RoundingMode.HALF_UP).doubleValue();

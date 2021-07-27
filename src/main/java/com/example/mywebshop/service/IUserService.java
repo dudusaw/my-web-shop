@@ -1,17 +1,18 @@
 package com.example.mywebshop.service;
 
-import com.example.mywebshop.config.validation.ValidUser;
+import com.example.mywebshop.dto.ValidUser;
 import com.example.mywebshop.entity.User;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import javax.servlet.http.HttpSession;
+import java.security.Principal;
 
 public interface IUserService extends UserDetailsService {
-    User findByUsername(String username);
+    User findByPrincipal(@Nullable Principal principal);
 
-    User getUserFromSession(HttpSession session);
+    User findByUsername(String username);
 
     Double calculateTotalCartPrice(User user);
 

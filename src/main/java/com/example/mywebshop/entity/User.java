@@ -2,7 +2,7 @@ package com.example.mywebshop.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,7 +14,6 @@ import java.util.Map;
 @Table(name = "user_entity") // user is already defined keyword in pg
 @Data
 @NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true)
 public class User {
 
     @Id
@@ -30,6 +29,7 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @MapKeyJoinColumn(name = "product_id")
+    @ToStringExclude
     private Map<Long, CartProduct> cartProducts;
 
     @ManyToMany
@@ -38,6 +38,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @ToStringExclude
     private List<UserRole> roles;
 
     public User(String email, String username, String password) {
@@ -46,6 +47,15 @@ public class User {
         this.password = password;
         cartProducts = new HashMap<>();
         roles = new ArrayList<>();
+    }
+
+    public boolean hasRole(String role) {
+        for (UserRole userRole : roles) {
+            if (userRole.getName().equals(role)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int getCartProductsCount() {

@@ -2,7 +2,7 @@ package com.example.mywebshop.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -11,7 +11,6 @@ import java.util.Map;
 @Table
 @Data
 @NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true)
 public class ProductMajorCategory {
 
     @Id
@@ -22,5 +21,6 @@ public class ProductMajorCategory {
 
     @OneToMany(mappedBy = "category")
     @MapKey
+    @ToStringExclude
     private Map<Long, Product> products;
 }

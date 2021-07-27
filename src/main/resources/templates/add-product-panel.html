@@ -16,7 +16,7 @@
 <body>
 <div th:replace="~{nav-frag :: nav('admin-panel')}"></div>
 
-<div class="container m-5 p-5 mx-auto border border-primary rounded fs-3 my-form-cntr">
+<div class="container m-5 p-5 mx-auto border border-primary rounded fs-3 my-bg-blue-t">
     <form method="post" th:action="@{/admin/add-product}" th:object="${validProduct}" enctype="multipart/form-data">
         <div th:if="${success == false && bindingResult != null}" class="alert alert-danger fs-4">
             <ul>
@@ -40,7 +40,7 @@
         </div>
         <div class="mb-3">
             <label for="imageFile" class="form-label">Product image</label>
-            <input class="form-control" type="file" id="imageFile" name="image">
+            <input class="form-control" type="file" id="imageFile" name="image" multiple>
         </div>
         <div class="mb-3">
             <label for="price" class="form-label">Price</label>

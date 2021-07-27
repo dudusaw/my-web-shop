@@ -3,7 +3,7 @@ create table product
     id          bigserial
         constraint product_pkey
             primary key,
-    description varchar(1000),
+    description varchar(10000),
     short_description varchar(255),
     price       decimal(12,2),
     rating      double precision,

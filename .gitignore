@@ -31,4 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
 /product_images/
+/session-info/
+/src/main/resources/keystore/

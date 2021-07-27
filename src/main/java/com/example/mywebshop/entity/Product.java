@@ -2,18 +2,16 @@ package com.example.mywebshop.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table
 @Data
 @NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true)
 public class Product {
 
     @Id
@@ -38,16 +36,22 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "file_meta_id")
     )
+    @ToStringExclude
+
     private List<FileMeta> imageFiles;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @ToStringExclude
+
     private ProductMajorCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @ToStringExclude
     private List<CartProduct> cartProducts;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @ToStringExclude
     private List<ProductReview> reviews;
 
     public Product(String title, String shortDescription, String description, Double rating, BigDecimal price, ProductMajorCategory category) {

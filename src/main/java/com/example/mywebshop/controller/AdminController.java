@@ -1,6 +1,6 @@
 package com.example.mywebshop.controller;
 
-import com.example.mywebshop.config.validation.ValidProduct;
+import com.example.mywebshop.dto.ValidProduct;
 import com.example.mywebshop.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,8 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -39,7 +38,7 @@ public class AdminController {
 
     @PostMapping("/add-product")
     public String addProduct(Model ui,
-                             @RequestParam(value = "image") MultipartFile image,
+                             @RequestParam(value = "image") List<MultipartFile> images,
                              @Valid @ModelAttribute ValidProduct validProduct,
                              BindingResult result) {
         ui.addAttribute("categoryList", productService.getMajorCategoriesList());
@@ -49,7 +48,7 @@ public class AdminController {
             return "add-product-panel";
         }
         ui.addAttribute("success", true);
-        validProduct.setImageFile(image);
+        validProduct.setImageFiles(images);
         productService.addNewProduct(validProduct);
         return "add-product-panel";
     }

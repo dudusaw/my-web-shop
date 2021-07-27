@@ -2,6 +2,7 @@ package com.example.mywebshop.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
 
@@ -19,6 +20,7 @@ public class ProductReviewVote {
      */
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @ToStringExclude
     private User user;
 
     /**
@@ -26,6 +28,7 @@ public class ProductReviewVote {
      */
     @ManyToOne
     @JoinColumn(name = "review_id")
+    @ToStringExclude
     private ProductReview review;
 
     // like or dislike
