@@ -84,8 +84,7 @@ class AdminControllerTest {
     }
 
     @Test
-    void addProductWithImage_valid(@Value("classpath:test/sofa.jpg") Resource image,
-                                   @Value("${my-values.image-location}") String imageLocation)
+    void addProductWithImage_valid(@Value("classpath:test/sofa.jpg") Resource image)
             throws Exception {
         String title = "test_product";
         String shortDesc = "asdf";
@@ -116,14 +115,6 @@ class AdminControllerTest {
 
         assertThat(success).isTrue();
         assertThat(byTitle.isEmpty()).isFalse();
-
-        List<FileMeta> allByOriginalFilename = fileRepository.findAllByOriginalFilename(image.getFilename());
-
-        assertThat(allByOriginalFilename.isEmpty()).isFalse();
-
-        Path path = Paths.get(imageLocation).resolve(allByOriginalFilename.get(0).getPath());
-        assertThat(Files.exists(path)).isTrue();
-        Files.deleteIfExists(path);
     }
 
     @Test

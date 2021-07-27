@@ -94,6 +94,7 @@ public class ProductService implements IProductService {
     }
 
     private void uploadAndAddImagesToProduct(List<MultipartFile> images, Product product) {
+        if (images == null) return;
         for (MultipartFile imageFile : images) {
             String fullFilePath = UUID.randomUUID().toString();
             FileTransferInfo fileTransferInfo = FileTransferInfo.createFrom(fullFilePath, imageFile);
