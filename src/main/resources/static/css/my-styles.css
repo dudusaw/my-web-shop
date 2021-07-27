@@ -11,7 +11,7 @@ body {
   min-height: 100vh;
 }
 
-.my-form-cntr {
+.my-bg-blue-t {
   background-color: rgba(181, 192, 222, 0.56);
 }
 
@@ -58,6 +58,12 @@ nav {
 
 .details-block {
   background-color: rgba(255, 255, 255, 0.7);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /*# sourceMappingURL=my-styles.css.map */

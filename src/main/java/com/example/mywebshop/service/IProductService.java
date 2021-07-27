@@ -16,15 +16,6 @@ public interface IProductService {
 
     void deleteProduct(Long id);
 
-    void submitReview(Long productId, User user, ValidReview validReview, BindingResult bindingResult);
-
-    void deleteReview(Long reviewId, User user);
-
-    /**
-     * Add new vote to the review, deletes one if already present by this user.
-     */
-    void submitReviewVote(Long reviewId, User user, boolean positive);
-
     void updateProductRatingFromReviews(Long id);
 
     void initProductReviewVotes(Product product);

@@ -1,6 +1,6 @@
 package com.example.mywebshop.dto;
 
-import com.example.mywebshop.utils.FileUtil;
+import com.example.mywebshop.utils.Util;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +12,9 @@ import java.io.InputStream;
 @AllArgsConstructor
 public class FileTransferInfo {
 
+    /**
+     * Stream must be explicitly closed
+     */
     private InputStream stream;
 
     private String filePath;
@@ -31,7 +34,7 @@ public class FileTransferInfo {
             info.filePath = fullFilePath;
             info.stream = file.getInputStream();
             info.originalFileName = file.getOriginalFilename();
-            info.format = FileUtil.getFileFormat(file.getOriginalFilename());
+            info.format = Util.getFileFormat(file.getOriginalFilename());
             info.contentType = file.getContentType();
             info.contentLength = file.getSize();
         } catch (IOException e) {

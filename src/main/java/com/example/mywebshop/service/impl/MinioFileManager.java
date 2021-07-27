@@ -5,7 +5,7 @@ import com.example.mywebshop.dto.FileTransferInfo;
 import com.example.mywebshop.entity.FileMeta;
 import com.example.mywebshop.repository.FileMetaRepository;
 import com.example.mywebshop.service.IFileService;
-import com.example.mywebshop.utils.FileUtil;
+import com.example.mywebshop.utils.Util;
 import io.minio.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -23,7 +23,7 @@ import java.util.Map;
 @Slf4j
 public class MinioFileManager implements IFileService {
 
-    private FileMetaRepository fileMetaRepository;
+    private final FileMetaRepository fileMetaRepository;
 
     private MinioClient minioClient;
     private String bucketName;
@@ -73,7 +73,9 @@ public class MinioFileManager implements IFileService {
                     .bucket(bucketName)
                     .object(filePath)
                     .build());
-            fileMetaRepository.findByPath(filePath).ifPresent(meta -> fileMetaRepository.delete(meta));
+            fileMetaRepository
+                    .findByPath(filePath)
+                    .ifPresent(fileMetaRepository::delete);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,7 +98,7 @@ public class MinioFileManager implements IFileService {
                     objectResponse,
                     filePath,
                     fileName,
-                    FileUtil.getFileFormat(fileName),
+                    Util.getFileFormat(fileName),
                     contentType,
                     -1
             );

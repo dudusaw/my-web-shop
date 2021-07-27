@@ -69,7 +69,7 @@
             <div id="characteristics">characteristics</div>
             <div id="reviews">
                 <h2 class="mb-4" th:text="|${product.reviews.size()} Reviews|">Reviews</h2>
-                <div th:each="review : ${product.reviews}" class="row border border-primary rounded-3 mb-3 p-4 fs-5">
+                <div th:each="review : ${product.reviews}" class="row border border-primary rounded-3 mb-3 p-2 fs-5">
                     <div class="col-2 d-flex align-items-center justify-content-center border-end border-secondary">
                         <div class="me-1" th:insert="~{icon-fragments :: 'star-fill'}"></div>
                         <h1 class="me-2 fs-1" th:text="${review.rating}">3</h1>
@@ -77,16 +77,16 @@
                     <div class="col">
                         <div class="row">
                             <p class="mb-2 col">By: <span class="text-warning bg-dark rounded-3 px-2 py-1" th:text="${review.user.username}">asdf</span></p>
-                            <div class="col-4">
-                                <div th:attr="onclick=|sendRequest('@{/products/act/vote-positive/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', false)|"
+                            <div class="col-5">
+                                <div th:attr="onclick=|reviewVote('@{/products/act/vote/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', true)|"
                                      class="link-success me-2 d-inline-block" style="cursor: pointer">
                                     <div th:replace="~{icon-fragments :: thumb-up}"></div>
-                                    <span th:text="${review.positiveVoteCount}">asd</span>
+                                    <span id="positiveVotesCount" th:text="${review.positiveVoteCount}">asd</span>
                                 </div>
-                                <div th:attr="onclick=|sendRequest('@{/products/act/vote-negative/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', false)|"
+                                <div th:attr="onclick=|reviewVote('@{/products/act/vote/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', false)|"
                                      class="link-danger me-2 d-inline-block" style="cursor: pointer">
                                     <div th:replace="~{icon-fragments :: thumb-down}"></div>
-                                    <span th:text="${review.negativeVoteCount}">asd</span>
+                                    <span id="negativeVotesCount" th:text="${review.negativeVoteCount}">asd</span>
                                 </div>
                                 <div th:if="${(user != null && review.user.id == user.id) || #authorization.expression('hasRole(''ADMIN'')')}"
                                      th:attr="onclick=|sendRequest('@{/products/act/delete-review/{productId}/{reviewId}(productId=${product.id}, reviewId=${review.id})}', true)|"
@@ -98,14 +98,11 @@
                         <p class="mb-0" th:text="${review.review}">Review text</p>
                     </div>
                 </div>
-                <form method="post" class="border border-primary rounded-3 p-3" th:action="@{/products/act/submit-review/{productId}(productId=${product.id})}">
+                <form id="reviewForm" method="post" class="border border-primary rounded-3 p-3" th:action="@{/products/act/submit-review/{productId}(productId=${product.id})}">
                     <h2>Leave a review:</h2>
-                    <div th:if="${bindingResult != null && bindingResult.hasErrors()}" class="alert alert-danger">
-                        <p class="mb-1" th:each="err : ${bindingResult.getAllErrors()}" th:text="${err.getDefaultMessage()}"></p>
-                    </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text">Rating</span>
-                        <select class="form-select" name="rating">
+                        <select id="reviewRating" class="form-select" name="rating">
                             <option selected value="5">5</option>
                             <option value="4">4</option>
                             <option value="3">3</option>
@@ -114,9 +111,10 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <textarea name="review" class="form-control" rows="3"></textarea>
+                        <textarea id="reviewArea" name="review" class="form-control" rows="3"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-lg btn-primary my-3">Submit</button>
+                    <button type="button" class="btn btn-lg btn-primary my-3"
+                            onclick="submitReview()">Submit</button>
                 </form>
             </div>
             <hr class="mb-5">
@@ -124,6 +122,8 @@
     </div>
 </div>
 
+<script th:src="@{/scripts/review-vote.js}"></script>
+<script th:src="@{/scripts/submit-review.js}"></script>
 <script th:src="@{/scripts/details-tab-change.js}"></script>
 <script th:src="@{/scripts/send-request.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"

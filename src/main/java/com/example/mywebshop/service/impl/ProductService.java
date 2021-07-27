@@ -10,7 +10,7 @@ import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.repository.ProductReviewRepository;
 import com.example.mywebshop.repository.ReviewVoteRepository;
 import com.example.mywebshop.service.IFileService;
-import com.example.mywebshop.service.IImageCompressor;
+import com.example.mywebshop.service.IFileCompressor;
 import com.example.mywebshop.service.IProductService;
 import com.example.mywebshop.service.ITextGenerator;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -44,12 +44,12 @@ public class ProductService implements IProductService {
     @Value("${my-values.longDescriptionMaxSymbols}")
     public int longDescriptionMaxSymbols;
 
-    private final ReviewVoteRepository reviewVoteRepository;
     private final ProductReviewRepository productReviewRepository;
+    private final ReviewVoteRepository reviewVoteRepository;
     private final ProductRepository productRepository;
     private final ProductMajorCategoryRepository majorCategoryRepository;
     private final ITextGenerator textGenerator;
-    private final IImageCompressor imageCompressor;
+    private final IFileCompressor imageCompressor;
     private final IFileService fileService;
 
     @Autowired
@@ -59,7 +59,7 @@ public class ProductService implements IProductService {
                           IFileService fileService,
                           ReviewVoteRepository reviewVoteRepository,
                           ProductReviewRepository productReviewRepository,
-                          IImageCompressor imageCompressor) {
+                          IFileCompressor imageCompressor) {
         this.productRepository = productRepository;
         this.majorCategoryRepository = majorCategoryRepository;
         this.textGenerator = textGenerator;
@@ -119,59 +119,8 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void submitReview(Long productId, User user, ValidReview validReview, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) return;
-        Product product = productRepository
-                .findById(productId)
-                .orElseThrow(NotFoundException::new);
-
-        Optional<ProductReview> persistedReview = productReviewRepository.findByUserIdAndProductId(user.getId(), productId);
-        if (persistedReview.isPresent()) {
-            bindingResult.addError(new ObjectError(bindingResult.getObjectName(), "review already exists by this user"));
-            return;
-        }
-        ProductReview newReview = new ProductReview(user, product, validReview.getRating(), validReview.getReview());
-        productReviewRepository.save(newReview);
-    }
-
-    @Override
-    public void deleteReview(Long reviewId, User user) {
-        ProductReview productReview = productReviewRepository
-                .findById(reviewId)
-                .orElseThrow(NotFoundException::new);
-
-        if (user.hasRole("ADMIN") || productReview
-                .getUser()
-                .getUsername()
-                .equals(user.getUsername())) {
-            productReviewRepository.delete(productReview);
-        } else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "no rights for that");
-        }
-    }
-
-    @Override
-    public void submitReviewVote(Long reviewId, User user, boolean positive) {
-        ProductReview productReview = productReviewRepository
-                .findById(reviewId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "no such review " + reviewId));
-        Optional<ProductReviewVote> persistedVote = reviewVoteRepository.findByUserIdAndReviewId(user.getId(), productReview.getId());
-        if (persistedVote.isPresent()) {
-            ProductReviewVote vote = persistedVote.get();
-            if (vote.isPositive() == positive) {
-                reviewVoteRepository.delete(vote);
-            } else {
-                vote.setPositive(!vote.isPositive());
-            }
-        } else {
-            ProductReviewVote vote = new ProductReviewVote(user, productReview, positive);
-            reviewVoteRepository.save(vote);
-        }
-    }
-
-    @Override
-    public void updateProductRatingFromReviews(Long id) {
-        Product product = getByIdOrThrow(id);
+    public void updateProductRatingFromReviews(Long productId) {
+        Product product = getByIdOrThrow(productId);
         int reviewCount = product.getReviews().size();
         double ratingSum = product
                 .getReviews()
@@ -194,9 +143,9 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product getByIdOrThrow(Long id) {
+    public Product getByIdOrThrow(Long productId) {
         return productRepository
-                .findById(id)
+                .findById(productId)
                 .orElseThrow(NotFoundException::new);
     }
 
