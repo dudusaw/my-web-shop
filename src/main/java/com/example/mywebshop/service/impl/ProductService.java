@@ -3,7 +3,6 @@ package com.example.mywebshop.service.impl;
 import com.example.mywebshop.config.exception.NotFoundException;
 import com.example.mywebshop.dto.FileTransferInfo;
 import com.example.mywebshop.dto.ValidProduct;
-import com.example.mywebshop.dto.ValidReview;
 import com.example.mywebshop.entity.*;
 import com.example.mywebshop.repository.ProductMajorCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
@@ -21,8 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,7 +28,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -100,7 +96,7 @@ public class ProductService implements IProductService {
             FileTransferInfo fileTransferInfo = FileTransferInfo.createFrom(fullFilePath, imageFile);
             imageCompressor.compressImageIfSupported(fileTransferInfo);
             fileService.uploadAsStream(fileTransferInfo);
-            FileMeta fileMeta = fileService.saveToDB(fileTransferInfo);
+            FileMeta fileMeta = fileService.saveMeta(fileTransferInfo);
             product.getImageFiles().add(fileMeta);
         }
     }

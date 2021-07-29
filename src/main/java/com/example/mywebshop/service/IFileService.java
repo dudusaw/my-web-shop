@@ -10,7 +10,7 @@ public interface IFileService {
 
     void uploadAsStream(FileTransferInfo file);
 
-    FileMeta saveToDB(FileTransferInfo file);
+    FileMeta saveMeta(FileTransferInfo file);
 
     void updateFileTags(Long fileMetaId);
 
