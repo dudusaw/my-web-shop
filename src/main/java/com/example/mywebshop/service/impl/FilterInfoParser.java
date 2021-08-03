@@ -21,13 +21,32 @@ public class FilterInfoParser {
     public List<IQueryFilterParameter> parse(SearchFilterInfo params) {
         this.params = params;
         List<IQueryFilterParameter> list = new ArrayList<>();
-        list.add(new SearchParameter(params.getSearchQuery()));
-        list.add(new PriceRangeParameter(params.getMinPrice(), params.getMaxPrice()));
-        list.add(new MinimalRatingParameter(params.getMinRating()));
+        String searchQuery = params.getSearchQuery();
+        Integer maxPrice = params.getMaxPrice();
+        Integer minPrice = params.getMinPrice();
         String category = params.getCategory();
-        if (!category.equals("all")) {
+        Double minRating = params.getMinRating();
+        if (isValid(searchQuery)) {
+            list.add(new SearchParameter(searchQuery));
+        }
+        if (isValid(minPrice, maxPrice)) {
+            list.add(new PriceRangeParameter(minPrice, maxPrice));
+        }
+        if (isValid(minRating)) {
+            list.add(new MinimalRatingParameter(minRating));
+        }
+        if (isValid(category) && !category.equals("all")) {
             list.add(new CategoryParameter(category));
         }
         return list;
+    }
+
+    private boolean isValid(Object... args) {
+        for (Object arg : args) {
+            if (arg != null && !arg.toString().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

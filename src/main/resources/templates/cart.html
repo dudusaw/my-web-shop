@@ -18,6 +18,12 @@
 <div th:replace="~{nav-frag :: nav('cart')}"></div>
 
 <div class="container">
+    <div class="alert alert-success my-3" th:if="${orderFormed}">
+        <h2>Order successfully formed</h2>
+    </div>
+    <div class="alert alert-danger my-3" th:if="${orderError}">
+        <h2 th:text="${orderError}">Order error</h2>
+    </div>
     <table class="table table-hover table-striped mb-3">
         <thead>
         <tr>
@@ -40,7 +46,7 @@
         </tbody>
     </table>
     <h2>Total price: <span th:text="${totalPrice}">10</span>$</h2>
-    <button class="btn btn-primary btn-lg my-4" type="button">Order</button>
+    <a th:href="@{/cart/form-order}" class="btn btn-primary btn-lg my-4" type="button">Order</a>
 </div>
 
 <script th:src="@{/scripts/send-request.js}"></script>

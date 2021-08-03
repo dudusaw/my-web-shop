@@ -1,8 +1,9 @@
 package com.example.mywebshop.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.builder.ToStringExclude;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @MapKeyJoinColumn(name = "product_id")
-    @ToStringExclude
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Map<Long, CartProduct> cartProducts;
 
     @ManyToMany
@@ -38,7 +40,8 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    @ToStringExclude
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<UserRole> roles;
 
     public User(String email, String username, String password) {

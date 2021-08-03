@@ -11,8 +11,10 @@ import org.springframework.web.context.annotation.SessionScope;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @SessionScope
@@ -23,7 +25,7 @@ public class SearchFilter implements ISearchFilter {
     @PersistenceContext
     private EntityManager em;
 
-    private Map<Class<?>, IQueryFilterParameter> filters = new HashMap<>();
+    private Map<Class<?>, IQueryFilterParameter> filters = new LinkedHashMap<>();
     private Class<? extends IQueryFilterParameter> sortByParameter;
     private boolean sortAscending;
     private final FilterInfoParser filterInfoParser = new FilterInfoParser();

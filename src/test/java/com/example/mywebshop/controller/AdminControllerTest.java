@@ -1,6 +1,5 @@
 package com.example.mywebshop.controller;
 
-import com.example.mywebshop.entity.FileMeta;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.repository.FileMetaRepository;
 import com.example.mywebshop.repository.ProductRepository;
@@ -19,9 +18,6 @@ import org.springframework.validation.BindingResult;
 import javax.transaction.Transactional;
 
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 

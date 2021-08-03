@@ -6,11 +6,11 @@ create table order_entity
     user_id bigint
         constraint fk__user_id
             references user_entity,
-    timestamp timestamp default now(),
+    timestamp timestamp,
     total_price decimal(12, 2)
 );
 
-create table order_to_products
+create table order_product
 (
     id bigserial
         constraint order_to_products_pk
@@ -20,5 +20,6 @@ create table order_to_products
             references order_entity,
     product_id bigint
         constraint order_to_products_product_id_fk
-            references product
+            references product,
+    count   int
 );
