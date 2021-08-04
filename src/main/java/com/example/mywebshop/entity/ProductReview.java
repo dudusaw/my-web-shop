@@ -1,7 +1,9 @@
 package com.example.mywebshop.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
@@ -19,12 +21,14 @@ public class ProductReview {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @ToStringExclude
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @ToStringExclude
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Product product;
 
     private Integer rating;
@@ -34,7 +38,8 @@ public class ProductReview {
     private LocalDateTime timestamp = LocalDateTime.now();
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
-    @ToStringExclude
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ProductReviewVote> votes;
 
     @Transient

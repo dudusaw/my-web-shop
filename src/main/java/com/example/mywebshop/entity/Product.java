@@ -1,7 +1,9 @@
 package com.example.mywebshop.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
@@ -36,22 +38,24 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "file_meta_id")
     )
-    @ToStringExclude
-
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<FileMeta> imageFiles;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @ToStringExclude
-
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private ProductMajorCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @ToStringExclude
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<CartProduct> cartProducts;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @ToStringExclude
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ProductReview> reviews;
 
     public Product(String title, String shortDescription, String description, Double rating, BigDecimal price, ProductMajorCategory category) {

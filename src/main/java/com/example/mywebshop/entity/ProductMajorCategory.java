@@ -1,7 +1,9 @@
 package com.example.mywebshop.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
@@ -21,6 +23,7 @@ public class ProductMajorCategory {
 
     @OneToMany(mappedBy = "category")
     @MapKey
-    @ToStringExclude
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Map<Long, Product> products;
 }

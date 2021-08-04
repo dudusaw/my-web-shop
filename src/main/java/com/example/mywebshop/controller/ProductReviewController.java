@@ -6,10 +6,8 @@ import com.example.mywebshop.entity.ProductReview;
 import com.example.mywebshop.entity.User;
 import com.example.mywebshop.service.IProductReviewService;
 import com.example.mywebshop.service.IProductService;
-import com.example.mywebshop.service.ISearchFilter;
 import com.example.mywebshop.service.IUserService;
 import com.example.mywebshop.utils.Util;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
@@ -33,9 +30,6 @@ public class ProductReviewController {
     private final IProductService productService;
     private final IProductReviewService productReviewService;
     private final IUserService userService;
-
-    @Resource
-    private ISearchFilter searchFilter;
 
     @Autowired
     public ProductReviewController(IProductService productService,

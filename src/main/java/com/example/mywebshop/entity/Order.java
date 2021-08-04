@@ -1,7 +1,9 @@
 package com.example.mywebshop.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
@@ -23,23 +25,18 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(columnDefinition = "default now()")
-    private LocalDateTime timestamp;
+    private LocalDateTime timestamp = LocalDateTime.now();
 
-    @ManyToMany
-    @JoinTable(
-            name = "order_to_products",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    @ToStringExclude
-    private List<Product> products;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<OrderProduct> products;
 
     private BigDecimal totalPrice;
 
-    public Order(User user, List<Product> products, BigDecimal totalPrice) {
+    public Order(User user, LocalDateTime timestamp, BigDecimal totalPrice) {
         this.user = user;
-        this.products = products;
+        this.timestamp = timestamp;
         this.totalPrice = totalPrice;
     }
 }

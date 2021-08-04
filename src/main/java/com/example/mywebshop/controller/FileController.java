@@ -3,6 +3,7 @@ package com.example.mywebshop.controller;
 import com.example.mywebshop.dto.FileTransferInfo;
 import com.example.mywebshop.service.IFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @Controller
+@Profile("remote-storage")
 public class FileController {
 
     private final IFileService fileService;

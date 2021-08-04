@@ -3,14 +3,16 @@ package com.example.mywebshop.service.impl;
 import com.example.mywebshop.config.exception.NotFoundException;
 import com.example.mywebshop.dto.FileTransferInfo;
 import com.example.mywebshop.dto.ValidProduct;
-import com.example.mywebshop.dto.ValidReview;
-import com.example.mywebshop.entity.*;
+import com.example.mywebshop.entity.FileMeta;
+import com.example.mywebshop.entity.Product;
+import com.example.mywebshop.entity.ProductMajorCategory;
+import com.example.mywebshop.entity.ProductReview;
 import com.example.mywebshop.repository.ProductMajorCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.repository.ProductReviewRepository;
 import com.example.mywebshop.repository.ReviewVoteRepository;
-import com.example.mywebshop.service.IFileService;
 import com.example.mywebshop.service.IFileCompressor;
+import com.example.mywebshop.service.IFileService;
 import com.example.mywebshop.service.IProductService;
 import com.example.mywebshop.service.ITextGenerator;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -21,8 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,7 +31,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,8 +43,6 @@ public class ProductService implements IProductService {
     @Value("${my-values.longDescriptionMaxSymbols}")
     public int longDescriptionMaxSymbols;
 
-    private final ProductReviewRepository productReviewRepository;
-    private final ReviewVoteRepository reviewVoteRepository;
     private final ProductRepository productRepository;
     private final ProductMajorCategoryRepository majorCategoryRepository;
     private final ITextGenerator textGenerator;
@@ -57,18 +54,13 @@ public class ProductService implements IProductService {
                           ProductMajorCategoryRepository majorCategoryRepository,
                           ITextGenerator textGenerator,
                           IFileService fileService,
-                          ReviewVoteRepository reviewVoteRepository,
-                          ProductReviewRepository productReviewRepository,
                           IFileCompressor imageCompressor) {
         this.productRepository = productRepository;
         this.majorCategoryRepository = majorCategoryRepository;
         this.textGenerator = textGenerator;
         this.fileService = fileService;
-        this.reviewVoteRepository = reviewVoteRepository;
-        this.productReviewRepository = productReviewRepository;
         this.imageCompressor = imageCompressor;
     }
-
 
     @Override
     public Long addNewProduct(ValidProduct validProduct) {
@@ -100,7 +92,7 @@ public class ProductService implements IProductService {
             FileTransferInfo fileTransferInfo = FileTransferInfo.createFrom(fullFilePath, imageFile);
             imageCompressor.compressImageIfSupported(fileTransferInfo);
             fileService.uploadAsStream(fileTransferInfo);
-            FileMeta fileMeta = fileService.saveToDB(fileTransferInfo);
+            FileMeta fileMeta = fileService.saveMeta(fileTransferInfo);
             product.getImageFiles().add(fileMeta);
         }
     }

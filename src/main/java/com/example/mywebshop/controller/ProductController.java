@@ -1,32 +1,19 @@
 package com.example.mywebshop.controller;
 
 import com.example.mywebshop.dto.SearchFilterInfo;
-import com.example.mywebshop.dto.ValidReview;
 import com.example.mywebshop.entity.Product;
-import com.example.mywebshop.entity.ProductReview;
 import com.example.mywebshop.entity.User;
-import com.example.mywebshop.service.IProductReviewService;
 import com.example.mywebshop.service.IProductService;
 import com.example.mywebshop.service.ISearchFilter;
 import com.example.mywebshop.service.IUserService;
-import com.example.mywebshop.service.impl.query.MinimalRatingParameter;
-import com.example.mywebshop.service.impl.query.PriceRangeParameter;
-import com.example.mywebshop.utils.Util;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/products")
