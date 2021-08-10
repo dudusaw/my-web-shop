@@ -1,0 +1,31 @@
+server:
+  servlet.context-path: /shop
+  http2.enabled: true
+  port: 8443
+  ssl:
+    key-store: ${SSL_KEY_STORE_PATH:classpath:keystore/localhost.p12}
+    key-store-type: ${SSL_KEY_STORE_TYPE:PKCS12}
+    key-store-password: ${SSL_KEY_STORE_PASSWORD:dudusaw}
+
+spring:
+  profiles:
+    active: local-storage
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/my-web-shop-pg}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin}
+
+spring.jpa:
+  hibernate.ddl-auto: validate
+  show-sql: true
+
+spring.web.resources:
+  cache.cachecontrol.max-age: 365d
+  chain.strategy.content:
+    enabled: true
+    paths: /**
+
+spring.servlet.multipart:
+  max-file-size: 2MB
+  max-request-size: 2MB

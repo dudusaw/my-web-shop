@@ -1,0 +1,6 @@
+minio:
+  endpoint: ${MINIO_ENDPOINT}
+  username: ${MINIO_USERNAME}
+  password: ${MINIO_PASSWORD}
+  bucket-name: my-web-shop-bk
+  keep-object-tags: false

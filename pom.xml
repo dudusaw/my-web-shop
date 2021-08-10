@@ -12,7 +12,6 @@
     <artifactId>my-web-shop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>my-web-shop</name>
-    <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>11</java.version>
     </properties>
