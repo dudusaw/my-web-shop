@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@Profile("remote-storage")
+@Profile("minio-storage")
 @Slf4j
 public class MinioFileManager implements IFileService {
 

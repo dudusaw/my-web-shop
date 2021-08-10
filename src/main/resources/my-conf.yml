@@ -1,0 +1,8 @@
+my-values:
+  storage-location: product_images
+  image-compression-quality: 0.4f
+  default-page-size: 15
+
+  # for random product generator
+  shortDescriptionMaxSymbols: 100
+  longDescriptionMaxSymbols: 2000

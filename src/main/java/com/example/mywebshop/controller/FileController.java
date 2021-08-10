@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @Controller
-@Profile("remote-storage")
+@Profile("!local-storage")
 public class FileController {
 
     private final IFileService fileService;
