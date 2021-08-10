@@ -42,6 +42,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         source: "target/*.jar, docker/Dockerfile"
         target: "~/my-web-shop"
+        strip_components: 1
         
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@master
@@ -58,7 +59,7 @@ jobs:
           cd ~/my-web-shop
           docker stop my-app-cnt
           docker rm my-app-cnt
-          docker build -t my-app:latest ./docker
+          docker build -t my-app:latest .
           docker run -d --name my-app-cnt -p 8443:8443 -v /var/my-vol/data:/data --restart always \
             -e SPRING_DATASOURCE_URL="$SPRING_DATASOURCE_URL" \
             -e SPRING_DATASOURCE_PASSWORD="$SPRING_DATASOURCE_PASSWORD" \
