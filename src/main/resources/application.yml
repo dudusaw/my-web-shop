@@ -1,9 +1,15 @@
 server:
   servlet.context-path: /shop
-  port: 8443
   http2.enabled: true
+  port: 8443
+  ssl:
+    key-store: ${SSL_KEY_STORE_PATH:classpath:keystore/localhost.p12}
+    key-store-type: ${SSL_KEY_STORE_TYPE:PKCS12}
+    key-store-password: ${SSL_KEY_STORE_PASSWORD:dudusaw}
 
 spring:
+  profiles:
+    active: local-storage
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/my-web-shop-pg}
