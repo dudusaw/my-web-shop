@@ -208,7 +208,7 @@ class ProductServiceTest {
         User user = new User();
         ProductReview review = new ProductReview(user, product, 5, "");
         product.setReviews(List.of(review));
-        int totalVotes = 1000;
+        int totalVotes = 100;
         int positiveVotes = 0;
         product = entityManager.persist(product);
         user = entityManager.persist(user);

@@ -68,5 +68,3 @@ jobs:
             -e SSL_KEY_STORE_PASSWORD="$SSL_KEY_STORE_PASSWORD" \
             -e spring_profiles_active=local-storage \
             my-app:latest
-
-
