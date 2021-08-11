@@ -25,7 +25,7 @@ jobs:
         distribution: 'adopt'
         
     - name: Build with Maven
-      run: mvn -B -e package --file pom.xml
+      run: mvn -B -e package -DskipTests --file pom.xml
       
     - name: Cache local Maven repository
       uses: actions/cache@v2
@@ -58,6 +58,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd ~/my-web-shop
+          ls
           docker stop my-app-cnt
           docker rm my-app-cnt
           docker build -t my-app:latest .
