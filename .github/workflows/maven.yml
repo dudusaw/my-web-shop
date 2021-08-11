@@ -56,6 +56,11 @@ jobs:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
+        envs: |
+          SPRING_DATASOURCE_URL,
+          SPRING_DATASOURCE_PASSWORD,
+          SSL_KEY_STORE_PATH,
+          SSL_KEY_STORE_PASSWORD
         script: |
           cd ~/my-web-shop
           ls
