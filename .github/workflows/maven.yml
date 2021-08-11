@@ -48,10 +48,10 @@ jobs:
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@master
       env:
-        SPRING_DATASOURCE_URL: ${{  secrets.SPRING_DATASOURCE_URL  }}
-        SPRING_DATASOURCE_PASSWORD: ${{  secrets.SPRING_DATASOURCE_PASSWORD  }}
-        SSL_KEY_STORE_PATH: ${{  secrets.SSL_KEY_STORE_PATH  }}
-        SSL_KEY_STORE_PASSWORD: ${{  secrets.SSL_KEY_STORE_PASSWORD  }}
+        SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+        SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+        SSL_KEY_STORE_PATH: ${{ secrets.SSL_KEY_STORE_PATH }}
+        SSL_KEY_STORE_PASSWORD: ${{ secrets.SSL_KEY_STORE_PASSWORD }}
       with:
         host: ${{ secrets.HOST }}
         username: root
@@ -63,9 +63,9 @@ jobs:
           docker rm my-app-cnt
           docker build -t my-app:latest .
           docker run -d --name my-app-cnt -p 8443:8443 -v /var/my-vol/data:/data --restart always \
-            -e SPRING_DATASOURCE_URL="$SPRING_DATASOURCE_URL" \
-            -e SPRING_DATASOURCE_PASSWORD="$SPRING_DATASOURCE_PASSWORD" \
-            -e SSL_KEY_STORE_PATH="$SSL_KEY_STORE_PATH" \
-            -e SSL_KEY_STORE_PASSWORD="$SSL_KEY_STORE_PASSWORD" \
+            -e "SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL" \
+            -e "SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD" \
+            -e "SSL_KEY_STORE_PATH=$SSL_KEY_STORE_PATH" \
+            -e "SSL_KEY_STORE_PASSWORD=$SSL_KEY_STORE_PASSWORD" \
             -e spring_profiles_active=local-storage \
             my-app:latest
