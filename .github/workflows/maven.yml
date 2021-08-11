@@ -41,7 +41,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        source: "target/*.jar, docker/Dockerfile"
+        source: "**/*.jar, docker/Dockerfile"
         target: "~/my-web-shop"
         strip_components: 1
         
