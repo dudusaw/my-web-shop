@@ -1,5 +1,5 @@
-FROM adoptopenjdk:11
+FROM adoptopenjdk:11-jre-hotspot
 WORKDIR ~/workdir/
 COPY *.jar app.jar
 EXPOSE 8443
-ENTRYPOINT ['java', '-jar', 'app.jar']
+ENTRYPOINT ["java", "-jar", "app.jar"]
