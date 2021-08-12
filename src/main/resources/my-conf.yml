@@ -1,5 +1,5 @@
 my-values:
-  storage-location: ${STORAGE_LOCATION:product_images}
+  storage-location: ${STORAGE_LOCATION:product_images/}
   image-compression-quality: 0.4f
   default-page-size: 15
 

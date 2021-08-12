@@ -71,7 +71,7 @@ jobs:
           docker build -t my-app:latest .
           docker run -d --name my-app-cnt --network="host" \
             -v $HOME/certs/:/certs/:ro \
-            -v /var/my-vol/data:/data \
+            -v /var/my-vol/data/:/data/ \
             -e "SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL" \
             -e "SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD" \
             -e "SSL_KEY_STORE_PATH=/certs/cert.p12" \
