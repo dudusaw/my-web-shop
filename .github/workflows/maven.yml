@@ -71,7 +71,7 @@ jobs:
         script: |
           cd ~/my-web-shop
           ls -l
-          export PROJECT_DIR=/opt/my-app/
+          export PROJECT_DIR=/opt/my-app
           docker stop my-app-cnt
           docker rm my-app-cnt
           docker build --build-arg PROJECT_DIR=$PROJECT_DIR -t my-app:latest .

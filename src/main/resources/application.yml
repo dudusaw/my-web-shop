@@ -5,7 +5,7 @@ server:
       persistent: true
       store-dir: ${STORAGE_LOCATION:}session-storage/
   http2.enabled: true
-  port: 8443
+  port: 443
   ssl:
     key-store: ${SSL_KEY_STORE_PATH:classpath:keystore/localhost.p12}
     key-store-type: ${SSL_KEY_STORE_TYPE:PKCS12}
