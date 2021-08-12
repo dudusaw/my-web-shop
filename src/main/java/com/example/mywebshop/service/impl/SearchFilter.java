@@ -54,6 +54,7 @@ public class SearchFilter implements ISearchFilter {
     public void clearFilters() {
         sortByParameter = null;
         filters.clear();
+        filterInfoParser.clear();
     }
 
     @Override

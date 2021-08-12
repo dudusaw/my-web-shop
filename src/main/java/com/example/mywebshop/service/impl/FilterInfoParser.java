@@ -14,6 +14,10 @@ public class FilterInfoParser {
 
     private SearchFilterInfo params = new SearchFilterInfo();
 
+    public void clear() {
+        params = new SearchFilterInfo();
+    }
+
     public SearchFilterInfo getLastParams() {
         return params;
     }

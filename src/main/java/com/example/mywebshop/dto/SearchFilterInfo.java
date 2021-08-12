@@ -14,5 +14,4 @@ public class SearchFilterInfo {
     private Integer maxPrice;
 
     private Double minRating;
-
 }

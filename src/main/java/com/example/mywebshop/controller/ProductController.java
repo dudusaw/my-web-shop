@@ -54,7 +54,7 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    @PostMapping("/clear-filters")
+    @RequestMapping(value = "/clear-filters", method = {RequestMethod.POST, RequestMethod.GET})
     public void clearFilters() {
         searchFilter.clearFilters();
     }
