@@ -66,16 +66,17 @@ jobs:
         script: |
           cd ~/my-web-shop
           ls -l
+          export PROJECT_DIR=/opt/my-app/
           docker stop my-app-cnt
           docker rm my-app-cnt
-          docker build -t my-app:latest .
+          docker build --build-arg PROJECT_DIR=$PROJECT_DIR -t my-app:latest .
           docker run -d --name my-app-cnt --network="host" \
-            -v $HOME/certs/:/certs/:ro \
-            -v /var/my-vol/data/:/data/ \
+            -v $HOME/certs/:$PROJECT_DIR/certs/:ro \
+            -v /var/my-vol/data/:$PROJECT_DIR/data/ \
             -e "SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL" \
             -e "SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD" \
-            -e "SSL_KEY_STORE_PATH=/certs/cert.p12" \
-            -e "STORAGE_LOCATION=/data/" \
+            -e "SSL_KEY_STORE_PATH=$PROJECT_DIR/certs/cert.p12" \
+            -e "STORAGE_LOCATION=$PROJECT_DIR/data/" \
             -e "SSL_KEY_STORE_PASSWORD=$SSL_KEY_STORE_PASSWORD" \
             -e "spring_profiles_active=$SPRING_PROFILES_ACTIVE" \
             --restart always my-app:latest

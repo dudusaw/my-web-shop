@@ -20,7 +20,7 @@
 <div class="container mt-5">
     <div class="row details-block rounded-3 mb-5 p-3">
         <div class="col-4 me-2">
-            <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+            <div th:unless="${product.imageFiles.isEmpty()}" id="carousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
                     <button th:each="img : ${product.imageFiles}" th:attr="data-bs-slide-to=${imgStat.index},aria-current=${imgStat.first}"
                             th:classappend="${imgStat.first} ? 'active' : _"
@@ -41,6 +41,7 @@
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
+            <img th:if="${product.imageFiles.isEmpty()}" th:src="@{/imgs/mws-icon-q.png}" class="d-block w-100 rounded-3" src="#" alt="...">
         </div>
         <div class="col">
             <div class="row justify-content-between">
