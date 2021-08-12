@@ -16,11 +16,6 @@ spring:
     multipart:
       max-file-size: 2MB
       max-request-size: 2MB
-  web.resources:
-    cache.cachecontrol.max-age: 365d
-    chain.strategy.content:
-      enabled: true
-      paths: /**
   jpa:
     hibernate.ddl-auto: validate
     show-sql: true
