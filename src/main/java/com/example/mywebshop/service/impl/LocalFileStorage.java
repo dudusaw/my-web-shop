@@ -82,8 +82,7 @@ public class LocalFileStorage implements IFileService {
                 file.getFilePath(),
                 file.getOriginalFileName(),
                 file.getContentType());
-        fileMetaRepository.save(meta);
-        return null;
+        return fileMetaRepository.save(meta);
     }
 
     @Override
