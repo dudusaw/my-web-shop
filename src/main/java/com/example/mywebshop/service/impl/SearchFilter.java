@@ -5,6 +5,7 @@ import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.service.IQueryFilterParameter;
 import com.example.mywebshop.service.ISearchFilter;
 import com.example.mywebshop.utils.Util;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @Component
 @SessionScope
+@Slf4j
 public class SearchFilter implements ISearchFilter {
 
     private static final String filteringTableName = "product";
@@ -100,7 +102,9 @@ public class SearchFilter implements ISearchFilter {
 
         queryBuilder.append(";");
 
-        return (List<Product>) em.createNativeQuery(queryBuilder.toString(), Product.class).getResultList();
+        String resultQuery = queryBuilder.toString();
+        log.info("result query '{}'", resultQuery);
+        return (List<Product>) em.createNativeQuery(resultQuery, Product.class).getResultList();
     }
 
     private void processPagingPart(int pageSize, int pageNum, StringBuilder query) {

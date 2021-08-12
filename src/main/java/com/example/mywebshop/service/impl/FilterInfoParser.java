@@ -29,7 +29,7 @@ public class FilterInfoParser {
         if (isValid(searchQuery)) {
             list.add(new SearchParameter(searchQuery));
         }
-        if (isValid(minPrice, maxPrice)) {
+        if (minPrice != null || maxPrice != null) {
             list.add(new PriceRangeParameter(minPrice, maxPrice));
         }
         if (isValid(minRating)) {
@@ -43,7 +43,7 @@ public class FilterInfoParser {
 
     private boolean isValid(Object... args) {
         for (Object arg : args) {
-            if (arg != null && !arg.toString().isEmpty()) {
+            if (arg == null || arg.toString().isEmpty()) {
                 return false;
             }
         }
