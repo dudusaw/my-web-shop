@@ -33,6 +33,6 @@ build/
 .vscode/
 
 /product_images/
-/session-info/
+/session-storage/
 /src/main/resources/keystore/
 /docker/*.jar
