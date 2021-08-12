@@ -66,6 +66,7 @@ public class LocalFileStorage implements IFileService {
     public void uploadAsStream(FileTransferInfo file) {
         try {
             Path finalPath = getFinalPath(file.getFilePath());
+            Files.createDirectories(finalPath.getParent());
             OutputStream outputStream = Files.newOutputStream(finalPath);
             file.getStream().transferTo(outputStream);
             file.getStream().close();

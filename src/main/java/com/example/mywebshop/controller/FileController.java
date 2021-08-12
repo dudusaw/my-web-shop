@@ -3,6 +3,7 @@ package com.example.mywebshop.controller;
 import com.example.mywebshop.dto.FileTransferInfo;
 import com.example.mywebshop.service.IFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.CacheControl;
@@ -15,7 +16,6 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 @Controller
 @Profile("!local-storage")
@@ -23,14 +23,13 @@ public class FileController {
 
     private final IFileService fileService;
 
-    private static final CacheControl cacheControl = CacheControl
-            .maxAge(365, TimeUnit.DAYS)
-            .noTransform()
-            .mustRevalidate();
+    private final CacheControl cacheControl;
 
     @Autowired
-    public FileController(IFileService fileService) {
+    public FileController(IFileService fileService,
+                          @Qualifier("myCacheControl") CacheControl cacheControl) {
         this.fileService = fileService;
+        this.cacheControl = cacheControl;
     }
 
     @GetMapping(value = "/file/**")
