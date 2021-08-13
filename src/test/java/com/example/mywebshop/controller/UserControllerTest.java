@@ -9,16 +9,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.mywebshop.entity.CartProduct;
 import com.example.mywebshop.entity.Order;
-import com.example.mywebshop.entity.OrderProduct;
 import com.example.mywebshop.entity.User;
-import com.example.mywebshop.entity.UserRole;
 import com.example.mywebshop.repository.CartProductRepository;
 import com.example.mywebshop.repository.OrderRepository;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.repository.UserRepository;
 import com.example.mywebshop.repository.UserRoleRepository;
+import com.example.mywebshop.service.IMailService;
 import com.example.mywebshop.service.IOrderService;
 import com.example.mywebshop.service.IUserService;
 import com.example.mywebshop.service.impl.OrderService;
@@ -115,8 +113,9 @@ public class UserControllerTest {
         UserService userService = new UserService(userRepository, productRepository, userRoleRepository,
                 new Argon2PasswordEncoder());
 
+        IMailService mailService = mock(IMailService.class);
         UserController userController = new UserController(userService,
-                new OrderService(mock(OrderRepository.class), mock(CartProductRepository.class)));
+                new OrderService(mock(OrderRepository.class), mock(CartProductRepository.class), mailService));
         UserPrincipal principal = new UserPrincipal("principal");
         assertEquals("cart", userController.cart(principal, new ConcurrentModel()));
         verify(userRepository).findByUsername(anyString());

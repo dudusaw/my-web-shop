@@ -6,6 +6,7 @@ import com.example.mywebshop.entity.OrderProduct;
 import com.example.mywebshop.entity.User;
 import com.example.mywebshop.repository.CartProductRepository;
 import com.example.mywebshop.repository.OrderRepository;
+import com.example.mywebshop.service.IMailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,15 @@ public class OrderService implements com.example.mywebshop.service.IOrderService
 
     private final OrderRepository orderRepository;
     private final CartProductRepository cartProductRepository;
+    private final IMailService mailService;
 
     @Autowired
     public OrderService(OrderRepository orderRepository,
-                        CartProductRepository cartProductRepository) {
+                        CartProductRepository cartProductRepository,
+                        IMailService mailService) {
         this.orderRepository = orderRepository;
         this.cartProductRepository = cartProductRepository;
+        this.mailService = mailService;
     }
 
     @Override
@@ -36,6 +40,14 @@ public class OrderService implements com.example.mywebshop.service.IOrderService
         Order order = new Order();
         order.setUser(user);
         order.setProducts(new ArrayList<>());
+        BigDecimal totalPrice = calculateTotalPrice(user, order);
+        order.setTotalPrice(totalPrice);
+        mailService.sendOrderFormedMessage(user);
+        log.info("user {} successfully formed an order: {}", user.getUsername(), order);
+        return orderRepository.save(order);
+    }
+
+    private BigDecimal calculateTotalPrice(User user, Order order) {
         BigDecimal totalPrice = BigDecimal.ZERO;
         for (CartProduct cartProduct : user.getCartProducts().values()) {
             OrderProduct orderProduct = new OrderProduct(
@@ -45,10 +57,7 @@ public class OrderService implements com.example.mywebshop.service.IOrderService
             order.getProducts().add(orderProduct);
             totalPrice = totalPrice.add(cartProduct.getProduct().getPrice());
         }
-        order.setTotalPrice(totalPrice);
-
-        log.info("user {} successfully formed an order: {}", user.getUsername(), order);
-        return orderRepository.save(order);
+        return totalPrice;
     }
 
     @Override

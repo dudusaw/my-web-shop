@@ -1,5 +1,6 @@
 package com.example.mywebshop.service.impl;
 
+import com.example.mywebshop.dto.SearchFilterInfo;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.service.impl.query.CategoryParameter;
 import com.example.mywebshop.service.impl.query.MinimalRatingParameter;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 class SearchFilterTest {
 
@@ -48,6 +50,101 @@ class SearchFilterTest {
         searchFilter.removeParameter(MinimalRatingParameter.class);
         empty = ((Map) ReflectionTestUtils.getField(searchFilter, "filters")).isEmpty();
         assertTrue(empty);
+    }
+
+    @Test
+    public void testParseAndSetParameters() {
+        // Arrange
+        SearchFilter searchFilter = new SearchFilter();
+
+        SearchFilterInfo searchFilterInfo = new SearchFilterInfo();
+        searchFilterInfo.setMinRating(10.0);
+        searchFilterInfo.setMaxPrice(3);
+        searchFilterInfo.setCategory("Category");
+        searchFilterInfo.setSearchQuery("Search Query");
+        searchFilterInfo.setMinPrice(1);
+
+        // Act
+        searchFilter.parseAndSetParameters(searchFilterInfo);
+
+        // Assert
+        assertSame(searchFilterInfo, searchFilter.getLastParams());
+    }
+
+    @Test
+    public void testParseAndSetParameters2() {
+        // Arrange
+        SearchFilter searchFilter = new SearchFilter();
+
+        SearchFilterInfo searchFilterInfo = new SearchFilterInfo();
+        searchFilterInfo.setMinRating(10.0);
+        searchFilterInfo.setMaxPrice(0);
+        searchFilterInfo.setCategory("Category");
+        searchFilterInfo.setSearchQuery("Search Query");
+        searchFilterInfo.setMinPrice(1);
+
+        // Act
+        searchFilter.parseAndSetParameters(searchFilterInfo);
+
+        // Assert
+        assertSame(searchFilterInfo, searchFilter.getLastParams());
+    }
+
+    @Test
+    public void testParseAndSetParameters3() {
+        // Arrange
+        SearchFilter searchFilter = new SearchFilter();
+
+        SearchFilterInfo searchFilterInfo = new SearchFilterInfo();
+        searchFilterInfo.setMinRating(10.0);
+        searchFilterInfo.setMaxPrice(3);
+        searchFilterInfo.setCategory("");
+        searchFilterInfo.setSearchQuery("Search Query");
+        searchFilterInfo.setMinPrice(1);
+
+        // Act
+        searchFilter.parseAndSetParameters(searchFilterInfo);
+
+        // Assert
+        assertSame(searchFilterInfo, searchFilter.getLastParams());
+    }
+
+    @Test
+    public void testParseAndSetParameters4() {
+        // Arrange
+        SearchFilter searchFilter = new SearchFilter();
+
+        SearchFilterInfo searchFilterInfo = new SearchFilterInfo();
+        searchFilterInfo.setMinRating(10.0);
+        searchFilterInfo.setMaxPrice(3);
+        searchFilterInfo.setCategory("Category");
+        searchFilterInfo.setSearchQuery("");
+        searchFilterInfo.setMinPrice(1);
+
+        // Act
+        searchFilter.parseAndSetParameters(searchFilterInfo);
+
+        // Assert
+        assertSame(searchFilterInfo, searchFilter.getLastParams());
+    }
+
+    @Test
+    public void testParseAndSetParameters5() {
+        // Arrange
+        SearchFilter searchFilter = new SearchFilter();
+
+        SearchFilterInfo searchFilterInfo = new SearchFilterInfo();
+        searchFilterInfo.setMinRating(10.0);
+        searchFilterInfo.setMaxPrice(3);
+        searchFilterInfo.setCategory("all");
+        searchFilterInfo.setSearchQuery("");
+        searchFilterInfo.setMinPrice(1);
+
+        // Act
+        searchFilter.parseAndSetParameters(searchFilterInfo);
+
+        // Assert
+        assertSame(searchFilterInfo, searchFilter.getLastParams());
     }
 
     @Test
