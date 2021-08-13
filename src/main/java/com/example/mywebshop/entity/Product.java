@@ -72,8 +72,9 @@ public class Product {
     }
 
     public List<Pair<String, String>> getCharacteristicList() {
-        String[] lines = characteristics.split("\n");
         List<Pair<String, String>> list = new ArrayList<>();
+        if (characteristics == null) return list;
+        String[] lines = characteristics.split("\n");
         for (String line : lines) {
             int firstColon = line.indexOf(":");
             String key = line.substring(0, firstColon);
