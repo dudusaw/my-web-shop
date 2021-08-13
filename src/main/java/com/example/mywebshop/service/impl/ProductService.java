@@ -82,6 +82,7 @@ public class ProductService implements IProductService {
         product.setPrice(validProduct.getPrice());
         product.setCategory(category);
         product.setImageFiles(new ArrayList<>());
+        product.setCharacteristics(validProduct.getCharacteristics().trim());
         product.setRating(0.);
         return product;
     }
@@ -89,6 +90,10 @@ public class ProductService implements IProductService {
     private void uploadAndAddImagesToProduct(List<MultipartFile> images, Product product) {
         if (images == null) return;
         for (MultipartFile imageFile : images) {
+            if (imageFile.getSize() == 0
+                    || imageFile.getOriginalFilename() == null
+                    || imageFile.getOriginalFilename().isEmpty()) continue;
+
             String fullFilePath = UUID.randomUUID().toString();
             FileTransferInfo fileTransferInfo = FileTransferInfo.createFrom(fullFilePath, imageFile);
             imageCompressor.compressImageIfSupported(fileTransferInfo);

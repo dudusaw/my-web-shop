@@ -67,7 +67,10 @@
             <div id="description">
                 <p class="mb-5 fs-3" style="white-space: pre-line;" th:text="${product.description}">Description</p>
             </div>
-            <div id="characteristics">characteristics</div>
+            <div id="characteristics">
+                <h3>Characteristics</h3>
+                <h4 th:each="property : ${product.getCharacteristicList()}" th:text="|${property.getKey()} : ${property.getValue()}|"></h4>
+            </div>
             <div id="reviews">
                 <h2 class="mb-4" th:text="|${product.reviews.size()} Reviews|">Reviews</h2>
                 <div th:each="review : ${product.reviews}" class="row border border-primary rounded-3 mb-3 p-2 fs-5">

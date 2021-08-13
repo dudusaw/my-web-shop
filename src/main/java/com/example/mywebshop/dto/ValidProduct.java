@@ -23,6 +23,8 @@ public class ValidProduct {
     @NotNull(message = "description is empty")
     private String description;
 
+    private String characteristics;
+
     private List<MultipartFile> imageFiles;
 
     @NotNull(message = "price is empty")

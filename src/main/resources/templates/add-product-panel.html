@@ -39,6 +39,12 @@
             <textarea class="form-control" id="longDesc" rows="3" th:field="*{description}"></textarea>
         </div>
         <div class="mb-3">
+            <label for="characteristics" class="form-label">Characteristics</label>
+            <textarea class="form-control" id="characteristics" rows="3"
+                      placeholder="1 property on 1 line, each in form 'key: value', i.e. separated by a colon (some key: some value)"
+                      th:field="*{characteristics}"></textarea>
+        </div>
+        <div class="mb-3">
             <label for="imageFile" class="form-label">Product image</label>
             <input class="form-control" type="file" id="imageFile" name="image" multiple>
         </div>
