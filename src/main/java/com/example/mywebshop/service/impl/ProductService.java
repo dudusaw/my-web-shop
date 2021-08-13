@@ -82,7 +82,9 @@ public class ProductService implements IProductService {
         product.setPrice(validProduct.getPrice());
         product.setCategory(category);
         product.setImageFiles(new ArrayList<>());
-        product.setCharacteristics(validProduct.getCharacteristics().trim());
+        if (validProduct.getCharacteristics() != null) {
+            product.setCharacteristics(validProduct.getCharacteristics().trim());
+        }
         product.setRating(0.);
         return product;
     }

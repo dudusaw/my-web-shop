@@ -234,51 +234,6 @@ class ProductServiceTest {
     }
 
     @Test
-    public void testInitProductReviewVotes() {
-        ProductRepository productRepository = mock(ProductRepository.class);
-        ProductMajorCategoryRepository majorCategoryRepository = mock(ProductMajorCategoryRepository.class);
-        ITextGenerator textGenerator = mock(ITextGenerator.class);
-        LocalFileStorage fileService = new LocalFileStorage(mock(FileMetaRepository.class));
-        ProductService productService = new ProductService(productRepository, majorCategoryRepository, textGenerator,
-                fileService, new FileCompressor());
-
-        ProductMajorCategory productMajorCategory = new ProductMajorCategory();
-        productMajorCategory.setId(123L);
-        productMajorCategory.setName("Name");
-        productMajorCategory.setProducts(new HashMap<>(1));
-
-        Product product = new Product();
-        product.setReviews(new ArrayList<>());
-        product.setShortDescription("Short Description");
-        product.setId(123L);
-        product.setCategory(productMajorCategory);
-        product.setPrice(BigDecimal.valueOf(42L));
-        ArrayList<FileMeta> fileMetaList = new ArrayList<>();
-        product.setImageFiles(fileMetaList);
-        product.setTitle("Dr");
-        product.setDescription("The characteristics of someone or something");
-        product.setCartProducts(new ArrayList<>());
-        product.setRating(10.0);
-        productService.initProductReviewVotes(product);
-        assertEquals(fileMetaList, product.getCartProducts());
-        assertEquals(
-                "Product(id=123, title=Dr, shortDescription=Short Description, description=The characteristics of someone"
-                        + " or something, rating=10.0, price=42)",
-                product.toString());
-        assertEquals("Dr", product.getTitle());
-        assertEquals("Short Description", product.getShortDescription());
-        List<ProductReview> reviews = product.getReviews();
-        assertEquals(fileMetaList, reviews);
-        assertEquals(10.0, product.getRating().doubleValue());
-        assertEquals(reviews, product.getImageFiles());
-        assertSame(productMajorCategory, product.getCategory());
-        assertEquals(123L, product.getId().longValue());
-        assertEquals("The characteristics of someone or something", product.getDescription());
-        assertEquals(0, productService.shortDescriptionMaxSymbols);
-        assertEquals(0, productService.longDescriptionMaxSymbols);
-    }
-
-    @Test
     public void testInitProductReviewVotes2() {
         ProductRepository productRepository = mock(ProductRepository.class);
         when(productRepository.getPositiveVoteCount(any())).thenReturn(3);
