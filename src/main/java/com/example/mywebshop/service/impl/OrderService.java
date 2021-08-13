@@ -6,6 +6,7 @@ import com.example.mywebshop.entity.OrderProduct;
 import com.example.mywebshop.entity.User;
 import com.example.mywebshop.repository.CartProductRepository;
 import com.example.mywebshop.repository.OrderRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
+@Slf4j
 public class OrderService implements com.example.mywebshop.service.IOrderService {
 
     private final OrderRepository orderRepository;
@@ -44,6 +46,8 @@ public class OrderService implements com.example.mywebshop.service.IOrderService
             totalPrice = totalPrice.add(cartProduct.getProduct().getPrice());
         }
         order.setTotalPrice(totalPrice);
+
+        log.info("user {} successfully formed an order: {}", user.getUsername(), order);
         return orderRepository.save(order);
     }
 
