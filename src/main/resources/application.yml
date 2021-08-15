@@ -43,3 +43,6 @@ spring:
         timeout: 5000
         writetimeout: 5000
         starttls.enable: true
+logging:
+  level:
+    com.example: trace

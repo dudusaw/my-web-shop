@@ -21,7 +21,7 @@ public class ControllerTimingLog {
         Object returnValue = point.proceed();
         sw.stop();
         long lastTaskTimeMillis = sw.getLastTaskTimeMillis();
-        log.info("method {{}} execution time: {}", point.getSignature(), lastTaskTimeMillis);
+        log.info("method {{}} execution time(ms): {}", point.getSignature(), lastTaskTimeMillis);
         return returnValue;
     }
 }
