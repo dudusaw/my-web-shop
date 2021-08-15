@@ -82,14 +82,14 @@ jobs:
           docker run -d --name my-app-cnt --network="host" \
             -v $HOME/certs/:$PROJECT_DIR/certs/:ro \
             -v /var/my-vol/data/:$PROJECT_DIR/data/ \
-            -e "SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL" \
-            -e "SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD" \
             -e "SSL_KEY_STORE_PATH=$PROJECT_DIR/certs/cert.p12" \
             -e "STORAGE_LOCATION=$PROJECT_DIR/data/" \
-            -e "SSL_KEY_STORE_PASSWORD=$SSL_KEY_STORE_PASSWORD" \
-            -e "GMAIL_USERNAME=$GMAIL_USERNAME" \
-            -e "GMAIL_PASSWORD=$GMAIL_PASSWORD" \
-            -e "spring_profiles_active=$SPRING_PROFILES_ACTIVE" \
+            -e SPRING_DATASOURCE_URL \
+            -e SPRING_DATASOURCE_PASSWORD \
+            -e SSL_KEY_STORE_PASSWORD \
+            -e GMAIL_USERNAME \
+            -e GMAIL_PASSWORD \
+            -e SPRING_PROFILES_ACTIVE \
             --restart always my-app:latest
           # remove untagged images left by old deployments
-          docker image prune
+          docker image prune -f
