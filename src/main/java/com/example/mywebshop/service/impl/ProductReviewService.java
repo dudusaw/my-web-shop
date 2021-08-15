@@ -10,6 +10,7 @@ import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.repository.ProductReviewRepository;
 import com.example.mywebshop.repository.ReviewVoteRepository;
 import com.example.mywebshop.service.IProductReviewService;
+import com.example.mywebshop.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,14 +28,17 @@ public class ProductReviewService implements IProductReviewService {
     private final ProductReviewRepository productReviewRepository;
     private final ReviewVoteRepository reviewVoteRepository;
     private final ProductRepository productRepository;
+    private final IProductService productService;
 
     @Autowired
     public ProductReviewService(ProductReviewRepository productReviewRepository,
                                 ReviewVoteRepository reviewVoteRepository,
-                                ProductRepository productRepository) {
+                                ProductRepository productRepository,
+                                IProductService productService) {
         this.productReviewRepository = productReviewRepository;
         this.reviewVoteRepository = reviewVoteRepository;
         this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     @Override
@@ -54,7 +58,9 @@ public class ProductReviewService implements IProductReviewService {
                 .getUser()
                 .getUsername()
                 .equals(user.getUsername())) {
-            productReviewRepository.delete(productReview);
+            productReviewRepository.deleteById(productReview.getId());
+            productReviewRepository.flush();
+            productService.updateProductRatingFromReviews(productReview.getProduct().getId());
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "no rights for that");
         }
@@ -74,6 +80,7 @@ public class ProductReviewService implements IProductReviewService {
         }
         ProductReview newReview = new ProductReview(user, product, validReview.getRating(), validReview.getReview());
         productReviewRepository.save(newReview);
+        productService.updateProductRatingFromReviews(productId);
     }
 
     @Override
