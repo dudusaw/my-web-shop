@@ -8,7 +8,7 @@ function submitReview() {
         body: data,
     }).then(value => {
         value.json().then(jsonResult => {
-            if (Boolean(jsonResult.submitSuccess) === true) {
+            if (jsonResult.submitSuccess === 'true') {
                 document.location.reload();
             } else {
                 let msg = 'Submit failed:\n';
