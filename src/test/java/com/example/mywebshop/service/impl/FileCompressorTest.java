@@ -15,7 +15,6 @@ import com.example.mywebshop.dto.FileTransferInfo;
 import java.io.ByteArrayInputStream;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.junit.jupiter.api.Test;

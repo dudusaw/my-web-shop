@@ -8,7 +8,6 @@ import com.example.mywebshop.entity.ProductMajorCategory;
 import com.example.mywebshop.entity.ProductReview;
 import com.example.mywebshop.entity.ProductReviewVote;
 import com.example.mywebshop.entity.User;
-import com.example.mywebshop.entity.UserRole;
 import com.example.mywebshop.repository.FileMetaRepository;
 import com.example.mywebshop.repository.ProductMajorCategoryRepository;
 import com.example.mywebshop.repository.ProductRepository;
@@ -36,7 +35,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.assertj.core.api.Assertions.*;

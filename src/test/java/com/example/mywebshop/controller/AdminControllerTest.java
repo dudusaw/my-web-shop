@@ -31,10 +31,10 @@ import static org.assertj.core.api.Assertions.*;
 @AutoConfigureMockMvc(addFilters = false)
 class AdminControllerTest {
 
-    private MockMvc mvc;
-    private ProductRepository productRepository;
-    private IProductService productService;
-    private FileMetaRepository fileRepository;
+    private final MockMvc mvc;
+    private final ProductRepository productRepository;
+    private final IProductService productService;
+    private final FileMetaRepository fileRepository;
 
     @Autowired
     AdminControllerTest(MockMvc mvc,

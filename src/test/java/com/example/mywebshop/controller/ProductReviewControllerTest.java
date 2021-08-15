@@ -6,14 +6,10 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.example.mywebshop.dto.ValidReview;
-import com.example.mywebshop.entity.CartProduct;
-import com.example.mywebshop.entity.FileMeta;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.entity.ProductMajorCategory;
 import com.example.mywebshop.entity.ProductReview;
-import com.example.mywebshop.entity.ProductReviewVote;
 import com.example.mywebshop.entity.User;
-import com.example.mywebshop.entity.UserRole;
 import com.example.mywebshop.service.IProductReviewService;
 import com.example.mywebshop.service.IProductService;
 import com.example.mywebshop.service.IUserService;

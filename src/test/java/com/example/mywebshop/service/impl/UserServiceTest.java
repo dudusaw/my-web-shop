@@ -26,10 +26,10 @@ import java.util.HashMap;
 @Transactional
 class UserServiceTest {
 
-    private IUserService userService;
-    private UserRepository userRepository;
-    private ProductRepository productRepository;
-    private PasswordEncoder passwordEncoder;
+    private final IUserService userService;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceTest(IUserService userService,

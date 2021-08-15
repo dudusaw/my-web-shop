@@ -28,9 +28,9 @@ import static org.assertj.core.api.Assertions.*;
 @Transactional
 class RegistrationControllerTest {
 
-    private MockMvc mvc;
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private final MockMvc mvc;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     RegistrationControllerTest(MockMvc mvc, UserRepository userRepository, PasswordEncoder passwordEncoder) {

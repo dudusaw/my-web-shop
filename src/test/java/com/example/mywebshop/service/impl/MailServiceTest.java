@@ -4,9 +4,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
-import com.example.mywebshop.entity.CartProduct;
 import com.example.mywebshop.entity.User;
-import com.example.mywebshop.entity.UserRole;
 
 import java.util.ArrayList;
 import java.util.HashMap;
