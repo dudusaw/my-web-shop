@@ -2,6 +2,7 @@ my-values:
   storage-location: ${STORAGE_LOCATION:product_images/}
   image-compression-quality: 0.4f
   default-page-size: 15
+  log-controllers-timing: ${LOG_CONTROLLERS_TIMING:true}
 
   # for random product generator
   shortDescriptionMaxSymbols: 100
