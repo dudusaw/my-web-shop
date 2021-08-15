@@ -90,6 +90,6 @@ jobs:
             -e "GMAIL_USERNAME=$GMAIL_USERNAME" \
             -e "GMAIL_PASSWORD=$GMAIL_PASSWORD" \
             -e "SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE" \
-            --restart always my-app:latest
+            --restart=always my-app:latest
           # remove untagged images left by old deployments
           docker image prune -f
