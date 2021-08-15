@@ -10,6 +10,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.mywebshop.dto.ValidReview;
+import com.example.mywebshop.entity.CartProduct;
+import com.example.mywebshop.entity.FileMeta;
 import com.example.mywebshop.entity.Product;
 import com.example.mywebshop.entity.ProductMajorCategory;
 import com.example.mywebshop.entity.ProductReview;
@@ -19,6 +21,7 @@ import com.example.mywebshop.entity.UserRole;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.repository.ProductReviewRepository;
 import com.example.mywebshop.repository.ReviewVoteRepository;
+import com.example.mywebshop.service.IProductService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -38,6 +41,9 @@ import org.springframework.web.server.ResponseStatusException;
 @ContextConfiguration(classes = {ProductReviewService.class})
 @ExtendWith(SpringExtension.class)
 public class ProductReviewServiceTest {
+    @MockBean
+    private IProductService iProductService;
+
     @MockBean
     private ProductRepository productRepository;
 
@@ -76,6 +82,7 @@ public class ProductReviewServiceTest {
         product.setTitle("Dr");
         product.setDescription("The characteristics of someone or something");
         product.setCartProducts(new ArrayList<>());
+        product.setCharacteristics("Characteristics");
         product.setRating(10.0);
 
         ProductReview productReview = new ProductReview();
@@ -93,6 +100,57 @@ public class ProductReviewServiceTest {
 
         // Act
         ProductReview actualReviewById = this.productReviewService.getReviewById(123L);
+
+        // Assert
+        assertSame(productReview, actualReviewById);
+        assertEquals("42", actualReviewById.getProduct().getPrice().toString());
+        verify(this.productReviewRepository).findById(any());
+    }
+
+    @Test
+    public void testGetReviewById2() {
+        // Arrange
+        User user = new User();
+        user.setEmail("jane.doe@example.org");
+        user.setPassword("iloveyou");
+        user.setRoles(new ArrayList<>());
+        user.setUsername("janedoe");
+        user.setId(123L);
+        user.setCartProducts(new HashMap<>(1));
+
+        ProductMajorCategory productMajorCategory = new ProductMajorCategory();
+        productMajorCategory.setId(123L);
+        productMajorCategory.setName("Name");
+        productMajorCategory.setProducts(new HashMap<>(1));
+
+        Product product = new Product();
+        product.setReviews(new ArrayList<>());
+        product.setShortDescription("Short Description");
+        product.setId(123L);
+        product.setCategory(productMajorCategory);
+        product.setPrice(BigDecimal.valueOf(42L));
+        product.setImageFiles(new ArrayList<>());
+        product.setTitle("Dr");
+        product.setDescription("The characteristics of someone or something");
+        product.setCartProducts(new ArrayList<>());
+        product.setCharacteristics("Characteristics");
+        product.setRating(10.0);
+
+        ProductReview productReview = new ProductReview();
+        productReview.setUser(user);
+        productReview.setReview("Review");
+        productReview.setPositiveVoteCount(3);
+        productReview.setProduct(product);
+        productReview.setVotes(new ArrayList<>());
+        productReview.setTimestamp(LocalDateTime.of(1, 1, 1, 1, 1));
+        productReview.setId(123L);
+        productReview.setNegativeVoteCount(3);
+        productReview.setRating(0);
+        Optional<ProductReview> ofResult = Optional.of(productReview);
+        when(this.productReviewRepository.findById(any())).thenReturn(ofResult);
+
+        // Act
+        ProductReview actualReviewById = this.productReviewService.getReviewById(0L);
 
         // Assert
         assertSame(productReview, actualReviewById);
@@ -126,6 +184,7 @@ public class ProductReviewServiceTest {
         product.setTitle("Dr");
         product.setDescription("The characteristics of someone or something");
         product.setCartProducts(new ArrayList<>());
+        product.setCharacteristics("Characteristics");
         product.setRating(10.0);
 
         ProductReview productReview = new ProductReview();
@@ -139,8 +198,10 @@ public class ProductReviewServiceTest {
         productReview.setNegativeVoteCount(3);
         productReview.setRating(1);
         Optional<ProductReview> ofResult = Optional.of(productReview);
-        doNothing().when(this.productReviewRepository).delete(any());
+        doNothing().when(this.productReviewRepository).flush();
+        doNothing().when(this.productReviewRepository).deleteById(any());
         when(this.productReviewRepository.findById(any())).thenReturn(ofResult);
+        doNothing().when(this.iProductService).updateProductRatingFromReviews(any());
 
         User user1 = new User();
         user1.setEmail("jane.doe@example.org");
@@ -154,8 +215,10 @@ public class ProductReviewServiceTest {
         this.productReviewService.deleteReview(123L, user1);
 
         // Assert
-        verify(this.productReviewRepository).delete(any());
+        verify(this.productReviewRepository).deleteById(any());
         verify(this.productReviewRepository).findById(any());
+        verify(this.productReviewRepository).flush();
+        verify(this.iProductService).updateProductRatingFromReviews(any());
     }
 
     @Test
@@ -184,6 +247,7 @@ public class ProductReviewServiceTest {
         product.setTitle("Dr");
         product.setDescription("The characteristics of someone or something");
         product.setCartProducts(new ArrayList<>());
+        product.setCharacteristics("Characteristics");
         product.setRating(10.0);
 
         ProductReview productReview = new ProductReview();
@@ -197,8 +261,10 @@ public class ProductReviewServiceTest {
         productReview.setNegativeVoteCount(3);
         productReview.setRating(1);
         Optional<ProductReview> ofResult = Optional.of(productReview);
-        doNothing().when(this.productReviewRepository).delete(any());
+        doNothing().when(this.productReviewRepository).flush();
+        doNothing().when(this.productReviewRepository).deleteById(any());
         when(this.productReviewRepository.findById(any())).thenReturn(ofResult);
+        doNothing().when(this.iProductService).updateProductRatingFromReviews(any());
 
         User user1 = new User();
         user1.setEmail("jane.doe@example.org");
@@ -210,71 +276,6 @@ public class ProductReviewServiceTest {
 
         // Act and Assert
         assertThrows(ResponseStatusException.class, () -> this.productReviewService.deleteReview(123L, user1));
-        verify(this.productReviewRepository).findById(any());
-    }
-
-    @Test
-    public void testDeleteReview4() {
-        // Arrange
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setPassword("iloveyou");
-        user.setRoles(new ArrayList<>());
-        user.setUsername("janedoe");
-        user.setId(123L);
-        user.setCartProducts(new HashMap<>(1));
-
-        ProductMajorCategory productMajorCategory = new ProductMajorCategory();
-        productMajorCategory.setId(123L);
-        productMajorCategory.setName("Name");
-        productMajorCategory.setProducts(new HashMap<>(1));
-
-        Product product = new Product();
-        product.setReviews(new ArrayList<>());
-        product.setShortDescription("Short Description");
-        product.setId(123L);
-        product.setCategory(productMajorCategory);
-        product.setPrice(BigDecimal.valueOf(42L));
-        product.setImageFiles(new ArrayList<>());
-        product.setTitle("Dr");
-        product.setDescription("The characteristics of someone or something");
-        product.setCartProducts(new ArrayList<>());
-        product.setRating(10.0);
-
-        ProductReview productReview = new ProductReview();
-        productReview.setUser(user);
-        productReview.setReview("Review");
-        productReview.setPositiveVoteCount(3);
-        productReview.setProduct(product);
-        productReview.setVotes(new ArrayList<>());
-        productReview.setTimestamp(LocalDateTime.of(1, 1, 1, 1, 1));
-        productReview.setId(123L);
-        productReview.setNegativeVoteCount(3);
-        productReview.setRating(1);
-        Optional<ProductReview> ofResult = Optional.of(productReview);
-        doNothing().when(this.productReviewRepository).delete(any());
-        when(this.productReviewRepository.findById(any())).thenReturn(ofResult);
-
-        UserRole userRole = new UserRole();
-        userRole.setId(123L);
-        userRole.setName("ADMIN");
-
-        ArrayList<UserRole> userRoleList = new ArrayList<>();
-        userRoleList.add(userRole);
-
-        User user1 = new User();
-        user1.setEmail("jane.doe@example.org");
-        user1.setPassword("iloveyou");
-        user1.setRoles(userRoleList);
-        user1.setUsername("janedoe");
-        user1.setId(123L);
-        user1.setCartProducts(new HashMap<>(1));
-
-        // Act
-        this.productReviewService.deleteReview(123L, user1);
-
-        // Assert
-        verify(this.productReviewRepository).delete(any());
         verify(this.productReviewRepository).findById(any());
     }
 
@@ -304,6 +305,7 @@ public class ProductReviewServiceTest {
         product.setTitle("Dr");
         product.setDescription("The characteristics of someone or something");
         product.setCartProducts(new ArrayList<>());
+        product.setCharacteristics("Characteristics");
         product.setRating(10.0);
 
         ProductReview productReview = new ProductReview();
@@ -334,6 +336,7 @@ public class ProductReviewServiceTest {
         product1.setTitle("Dr");
         product1.setDescription("The characteristics of someone or something");
         product1.setCartProducts(new ArrayList<>());
+        product1.setCharacteristics("Characteristics");
         product1.setRating(10.0);
         Optional<Product> ofResult1 = Optional.of(product1);
         when(this.productRepository.findById(any())).thenReturn(ofResult1);
@@ -393,6 +396,7 @@ public class ProductReviewServiceTest {
         product.setTitle("Dr");
         product.setDescription("The characteristics of someone or something");
         product.setCartProducts(new ArrayList<>());
+        product.setCharacteristics("Characteristics");
         product.setRating(10.0);
 
         ProductReview productReview = new ProductReview();
@@ -424,9 +428,11 @@ public class ProductReviewServiceTest {
         product1.setTitle("Dr");
         product1.setDescription("The characteristics of someone or something");
         product1.setCartProducts(new ArrayList<>());
+        product1.setCharacteristics("Characteristics");
         product1.setRating(10.0);
         Optional<Product> ofResult = Optional.of(product1);
         when(this.productRepository.findById(any())).thenReturn(ofResult);
+        doNothing().when(this.iProductService).updateProductRatingFromReviews(any());
 
         User user1 = new User();
         user1.setEmail("jane.doe@example.org");
@@ -448,6 +454,7 @@ public class ProductReviewServiceTest {
         verify(this.productReviewRepository).findByUserIdAndProductId(any(), any());
         verify(this.productReviewRepository).save(any());
         verify(this.productRepository).findById(any());
+        verify(this.iProductService).updateProductRatingFromReviews(any());
     }
 
     @Test
@@ -484,6 +491,7 @@ public class ProductReviewServiceTest {
         product.setTitle("Dr");
         product.setDescription("The characteristics of someone or something");
         product.setCartProducts(new ArrayList<>());
+        product.setCharacteristics("Characteristics");
         product.setRating(10.0);
 
         ProductReview productReview = new ProductReview();
@@ -529,6 +537,7 @@ public class ProductReviewServiceTest {
         product1.setTitle("Dr");
         product1.setDescription("The characteristics of someone or something");
         product1.setCartProducts(new ArrayList<>());
+        product1.setCharacteristics("Characteristics");
         product1.setRating(10.0);
 
         ProductReview productReview1 = new ProductReview();
@@ -595,6 +604,7 @@ public class ProductReviewServiceTest {
         product.setTitle("Dr");
         product.setDescription("The characteristics of someone or something");
         product.setCartProducts(new ArrayList<>());
+        product.setCharacteristics("Characteristics");
         product.setRating(10.0);
 
         ProductReview productReview = new ProductReview();
@@ -640,6 +650,7 @@ public class ProductReviewServiceTest {
         product1.setTitle("Dr");
         product1.setDescription("The characteristics of someone or something");
         product1.setCartProducts(new ArrayList<>());
+        product1.setCharacteristics("Characteristics");
         product1.setRating(10.0);
 
         ProductReview productReview1 = new ProductReview();
@@ -705,6 +716,7 @@ public class ProductReviewServiceTest {
         product.setTitle("Dr");
         product.setDescription("The characteristics of someone or something");
         product.setCartProducts(new ArrayList<>());
+        product.setCharacteristics("Characteristics");
         product.setRating(10.0);
 
         ProductReview productReview = new ProductReview();
@@ -751,6 +763,7 @@ public class ProductReviewServiceTest {
         product1.setTitle("Dr");
         product1.setDescription("The characteristics of someone or something");
         product1.setCartProducts(new ArrayList<>());
+        product1.setCharacteristics("Characteristics");
         product1.setRating(10.0);
 
         ProductReview productReview1 = new ProductReview();

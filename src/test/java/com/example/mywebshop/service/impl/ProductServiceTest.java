@@ -361,43 +361,43 @@ class ProductServiceTest {
         ProductMajorCategory productMajorCategory = new ProductMajorCategory();
         productMajorCategory.setId(123L);
         productMajorCategory.setName("Name");
-        productMajorCategory.setProducts(new HashMap<Long, Product>(1));
+        productMajorCategory.setProducts(new HashMap<>(1));
 
         Product product = new Product();
-        product.setReviews(new ArrayList<ProductReview>());
+        product.setReviews(new ArrayList<>());
         product.setShortDescription("Short Description");
         product.setId(123L);
         product.setCategory(productMajorCategory);
         product.setPrice(BigDecimal.valueOf(42L));
-        product.setImageFiles(new ArrayList<FileMeta>());
+        product.setImageFiles(new ArrayList<>());
         product.setTitle("Dr");
         product.setDescription("The characteristics of someone or something");
-        product.setCartProducts(new ArrayList<CartProduct>());
+        product.setCartProducts(new ArrayList<>());
         product.setCharacteristics("Characteristics");
         product.setRating(10.0);
-        Optional<Product> ofResult = Optional.<Product>of(product);
+        Optional<Product> ofResult = Optional.of(product);
 
         ProductMajorCategory productMajorCategory1 = new ProductMajorCategory();
         productMajorCategory1.setId(123L);
         productMajorCategory1.setName("Name");
-        productMajorCategory1.setProducts(new HashMap<Long, Product>(1));
+        productMajorCategory1.setProducts(new HashMap<>(1));
 
         Product product1 = new Product();
-        ArrayList<ProductReview> productReviewList = new ArrayList<ProductReview>();
+        ArrayList<ProductReview> productReviewList = new ArrayList<>();
         product1.setReviews(productReviewList);
         product1.setShortDescription("Short Description");
         product1.setId(123L);
         product1.setCategory(productMajorCategory1);
         product1.setPrice(BigDecimal.valueOf(42L));
-        product1.setImageFiles(new ArrayList<FileMeta>());
+        product1.setImageFiles(new ArrayList<>());
         product1.setTitle("Dr");
         product1.setDescription("The characteristics of someone or something");
-        product1.setCartProducts(new ArrayList<CartProduct>());
+        product1.setCartProducts(new ArrayList<>());
         product1.setCharacteristics("Characteristics");
         product1.setRating(10.0);
         ProductRepository productRepository = mock(ProductRepository.class);
-        when(productRepository.save((Product) any())).thenReturn(product1);
-        when(productRepository.findById((Long) any())).thenReturn(ofResult);
+        when(productRepository.save(any())).thenReturn(product1);
+        when(productRepository.findById(any())).thenReturn(ofResult);
         ProductMajorCategoryRepository majorCategoryRepository = mock(ProductMajorCategoryRepository.class);
         ITextGenerator textGenerator = mock(ITextGenerator.class);
         LocalFileStorage fileService = new LocalFileStorage(mock(FileMetaRepository.class));
@@ -408,8 +408,8 @@ class ProductServiceTest {
         productService.updateProductRatingFromReviews(123L);
 
         // Assert
-        verify(productRepository).findById((Long) any());
-        verify(productRepository).save((Product) any());
+        verify(productRepository).findById(any());
+        verify(productRepository).save(any());
         assertEquals(productReviewList, productService.getMajorCategoriesList());
     }
 

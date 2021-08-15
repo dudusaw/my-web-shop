@@ -38,10 +38,10 @@ public class MailServiceTest {
         User user = new User();
         user.setEmail("jane.doe@example.org");
         user.setPassword("iloveyou");
-        user.setRoles(new ArrayList<UserRole>());
+        user.setRoles(new ArrayList<>());
         user.setUsername("janedoe");
         user.setId(123L);
-        user.setCartProducts(new HashMap<Long, CartProduct>(1));
+        user.setCartProducts(new HashMap<>(1));
 
         // Act
         this.mailService.sendOrderFormedMessage(user, false);

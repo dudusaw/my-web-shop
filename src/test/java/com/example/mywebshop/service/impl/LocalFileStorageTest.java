@@ -51,7 +51,7 @@ public class LocalFileStorageTest {
         fileMeta.setId(123L);
         fileMeta.setPath("Path");
         FileMetaRepository fileMetaRepository = mock(FileMetaRepository.class);
-        when(fileMetaRepository.save((FileMeta) any())).thenReturn(fileMeta);
+        when(fileMetaRepository.save(any())).thenReturn(fileMeta);
         LocalFileStorage localFileStorage = new LocalFileStorage(fileMetaRepository);
 
         // Act and Assert
@@ -59,7 +59,7 @@ public class LocalFileStorageTest {
                 localFileStorage
                         .saveMeta(new FileTransferInfo(new ByteArrayInputStream("AAAAAAAAAAAAAAAAAAAAAAAA".getBytes("UTF-8")),
                                 "/tmp/foo.txt", "foo.txt", "Format", "text/plain", 3L)));
-        verify(fileMetaRepository).save((FileMeta) any());
+        verify(fileMetaRepository).save(any());
     }
 
     @Test

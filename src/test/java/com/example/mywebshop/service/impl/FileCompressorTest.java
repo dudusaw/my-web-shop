@@ -80,7 +80,7 @@ public class FileCompressorTest {
         // Arrange
         FileCompressor fileCompressor = new FileCompressor();
         FileTransferInfo fileTransferInfo = mock(FileTransferInfo.class);
-        doNothing().when(fileTransferInfo).setStream((InputStream) any());
+        doNothing().when(fileTransferInfo).setStream(any());
         when(fileTransferInfo.getStream())
                 .thenReturn(new ByteArrayInputStream("AAAAAAAAAAAAAAAAAAAAAAAA".getBytes("UTF-8")));
 
@@ -89,7 +89,7 @@ public class FileCompressorTest {
 
         // Assert
         verify(fileTransferInfo, times(3)).getStream();
-        verify(fileTransferInfo).setStream((InputStream) any());
+        verify(fileTransferInfo).setStream(any());
     }
 
     @Test
@@ -97,7 +97,7 @@ public class FileCompressorTest {
         // Arrange
         FileCompressor fileCompressor = new FileCompressor();
         FileTransferInfo fileTransferInfo = mock(FileTransferInfo.class);
-        doNothing().when(fileTransferInfo).setStream((InputStream) any());
+        doNothing().when(fileTransferInfo).setStream(any());
         when(fileTransferInfo.getStream()).thenReturn(new FileInputStream(new FileDescriptor()));
 
         // Act
