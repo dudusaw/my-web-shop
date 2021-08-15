@@ -11,6 +11,7 @@ import com.example.mywebshop.entity.UserRole;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.example.mywebshop.service.IMailService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class MailServiceTest {
     private JavaMailSender javaMailSender;
 
     @Autowired
-    private MailService mailService;
+    private IMailService mailService;
 
     @Test
     public void testSendOrderFormedMessage() throws MailException {
@@ -43,7 +44,7 @@ public class MailServiceTest {
         user.setCartProducts(new HashMap<Long, CartProduct>(1));
 
         // Act
-        this.mailService.sendOrderFormedMessage(user, true);
+        this.mailService.sendOrderFormedMessage(user, false);
 
         // Assert
         verify(this.javaMailSender).send((org.springframework.mail.SimpleMailMessage) any());
