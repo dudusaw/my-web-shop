@@ -43,7 +43,7 @@ public class MailServiceTest {
         user.setCartProducts(new HashMap<Long, CartProduct>(1));
 
         // Act
-        this.mailService.sendOrderFormedMessage(user);
+        this.mailService.sendOrderFormedMessage(user, true);
 
         // Assert
         verify(this.javaMailSender).send((org.springframework.mail.SimpleMailMessage) any());

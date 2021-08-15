@@ -9,6 +9,7 @@ import com.example.mywebshop.entity.User;
 import com.example.mywebshop.repository.ProductRepository;
 import com.example.mywebshop.repository.ProductReviewRepository;
 import com.example.mywebshop.repository.ReviewVoteRepository;
+import com.example.mywebshop.service.IProductReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
-public class ProductReviewService implements com.example.mywebshop.service.IProductReviewService {
+@Transactional
+public class ProductReviewService implements IProductReviewService {
 
     private final ProductReviewRepository productReviewRepository;
     private final ReviewVoteRepository reviewVoteRepository;

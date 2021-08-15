@@ -11,11 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
+@Transactional
 @Slf4j
 public class OrderService implements com.example.mywebshop.service.IOrderService {
 
@@ -40,14 +42,14 @@ public class OrderService implements com.example.mywebshop.service.IOrderService
         Order order = new Order();
         order.setUser(user);
         order.setProducts(new ArrayList<>());
-        BigDecimal totalPrice = calculateTotalPrice(user, order);
+        BigDecimal totalPrice = addOrderProductsAndCalculateTotalPrice(user, order);
         order.setTotalPrice(totalPrice);
-        mailService.sendOrderFormedMessage(user);
+        mailService.sendOrderFormedMessage(user, true);
         log.info("user {} successfully formed an order: {}", user.getUsername(), order);
         return orderRepository.save(order);
     }
 
-    private BigDecimal calculateTotalPrice(User user, Order order) {
+    private BigDecimal addOrderProductsAndCalculateTotalPrice(User user, Order order) {
         BigDecimal totalPrice = BigDecimal.ZERO;
         for (CartProduct cartProduct : user.getCartProducts().values()) {
             OrderProduct orderProduct = new OrderProduct(
