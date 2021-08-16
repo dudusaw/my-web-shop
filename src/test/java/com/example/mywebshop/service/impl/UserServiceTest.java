@@ -111,9 +111,9 @@ class UserServiceTest {
             total = total.add(contMulPrice);
         }
         user = userRepository.save(user);
-        Double calculatedTotalCartPrice = userService.calculateTotalCartPrice(user);
+        BigDecimal calculatedTotalCartPrice = userService.calculateTotalCartPrice(user);
 
-        Assertions.assertThat(calculatedTotalCartPrice).isEqualTo(total.doubleValue());
+        Assertions.assertThat(calculatedTotalCartPrice).isEqualTo(total);
     }
 
     private User createTestUser() {

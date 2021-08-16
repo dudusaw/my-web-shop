@@ -56,14 +56,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Double calculateTotalCartPrice(User user) {
+    public BigDecimal calculateTotalCartPrice(User user) {
         BigDecimal price = BigDecimal.ZERO;
         for (CartProduct cartProduct : user.getCartProducts().values()) {
             Product product = cartProduct.getProduct();
             BigDecimal priceMulCount = product.getPrice().multiply(BigDecimal.valueOf(cartProduct.getCount()));
             price = price.add(priceMulCount);
         }
-        return price.doubleValue();
+        return price;
     }
 
     @Override

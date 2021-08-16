@@ -82,12 +82,6 @@ public class SearchFilter implements ISearchFilter {
         return getFiltered(defaultPageSize, 0);
     }
 
-    /**
-     * Returns list of products that matches active filter parameters. Returns all products if no filters active.
-     *
-     * @param pageSize how many items on 1 page
-     * @param pageNum  starts from 1
-     */
     @Override
     public List<Product> getFiltered(int pageSize, int pageNum) {
         String initialQuery = Util.concat("select * from ", filteringTableName, " ", IQueryFilterParameter.alias);

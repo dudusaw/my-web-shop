@@ -10,6 +10,9 @@ public interface IFileService {
 
     void uploadAsStream(FileTransferInfo file);
 
+    /**
+     * Save the specified file meta info in database and return the result.
+     */
     FileMeta saveMeta(FileTransferInfo file);
 
     void updateFileTags(Long fileMetaId);
