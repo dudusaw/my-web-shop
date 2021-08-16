@@ -34,6 +34,11 @@ public class User {
     @EqualsAndHashCode.Exclude
     private Map<Long, CartProduct> cartProducts;
 
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Order> orders;
+
     @ManyToMany
     @JoinTable(
             name = "user_to_role",
@@ -53,19 +58,16 @@ public class User {
     }
 
     public boolean hasRole(String role) {
-        for (UserRole userRole : roles) {
-            if (userRole.getName().equals(role)) {
-                return true;
-            }
-        }
-        return false;
+        return roles
+                .stream()
+                .map(UserRole::getName)
+                .anyMatch(s -> s.equals(role));
     }
 
     public int getCartProductsCount() {
-        int c = 0;
-        for (CartProduct value : cartProducts.values()) {
-            c += value.getCount();
-        }
-        return c;
+        return cartProducts.values()
+                .stream()
+                .mapToInt(CartProduct::getCount)
+                .sum();
     }
 }

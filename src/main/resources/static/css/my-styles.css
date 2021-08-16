@@ -1,69 +1,74 @@
 body {
-  font-family: "Roboto", sans-serif;
+    font-family: "Roboto", sans-serif;
 }
 
 .my-background {
-  background-image: url(/shop/imgs/bg-min.png);
-  background-repeat: no-repeat;
-  background-position-x: center;
-  opacity: 70%;
-  z-index: -1;
-  min-height: 100vh;
+    background-image: url(/shop/imgs/bg-min.png);
+    background-repeat: no-repeat;
+    background-position-x: center;
+    opacity: 70%;
+    z-index: -1;
+    min-height: 100vh;
 }
 
 .my-bg-blue-t {
-  background-color: rgba(181, 192, 222, 0.56);
+    background-color: rgba(181, 192, 222, 0.56);
 }
 
 .text-my-indigo {
-  color: #a571f4;
+    color: #a571f4;
 }
 
 .bg-my-indigo {
-  background-color: #a571f4;
+    background-color: #a571f4;
 }
 
 .bg-my-gray {
-  background-color: #3b3b3b;
+    background-color: #3b3b3b;
 }
 
 nav {
-  font-size: 1.5rem;
+    font-size: 1.5rem;
 }
 
 .card {
-  border-radius: 10px;
-  border: 1px solid #a571f4;
-  height: 40rem;
+    border-radius: 10px;
+    border: 1px solid #a571f4;
+    height: 40rem;
 }
 
 .card-img-top {
-  border-bottom: 4px solid lightgray;
-  object-fit: contain;
-  height: 40%;
+    border-bottom: 4px solid lightgray;
+    object-fit: contain;
+    height: 40%;
 }
 
 .my-card-top {
-  background-color: #a571f4;
-  height: 8px;
+    background-color: #a571f4;
+    height: 8px;
 }
 
 .my-icon {
-  width: 1.75rem;
+    width: 1.75rem;
 }
 
 .rating-star {
-  color: #ffbb33;
+    color: #ffbb33;
 }
 
-.details-block {
-  background-color: rgba(255, 255, 255, 0.7);
+.bg-semi-white {
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
-/*# sourceMappingURL=my-styles.css.map */
+.profile-img {
+    object-fit: contain;
+    height: 150px;
+    border: 1px solid #bdbdbd;
+    display: block;
+}

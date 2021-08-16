@@ -1,5 +1,6 @@
 package com.example.mywebshop.entity;
 
+import com.example.mywebshop.service.impl.OrderStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -33,6 +34,8 @@ public class Order {
     private List<OrderProduct> products;
 
     private BigDecimal totalPrice;
+
+    private OrderStatus status = OrderStatus.ACTIVE;
 
     public Order(User user, LocalDateTime timestamp, BigDecimal totalPrice) {
         this.user = user;

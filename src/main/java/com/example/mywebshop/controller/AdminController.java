@@ -24,6 +24,11 @@ public class AdminController {
         this.productService = productService;
     }
 
+    @GetMapping("/panel")
+    public String adminPanel() {
+        return "admin-panel";
+    }
+
     @GetMapping("/delete")
     public String deleteProduct(@RequestParam Long id) {
         productService.deleteProduct(id);

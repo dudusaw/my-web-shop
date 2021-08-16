@@ -7,6 +7,7 @@ create table order_entity
         constraint fk__user_id
             references user_entity,
     timestamp timestamp,
+    status int,
     total_price decimal(12, 2)
 );
 

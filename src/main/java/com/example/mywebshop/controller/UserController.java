@@ -24,12 +24,25 @@ public class UserController {
         this.IOrderService = IOrderService;
     }
 
+    @GetMapping
+    public String home() {
+        return "home";
+    }
+
     @GetMapping("/cart")
     public String cart(Principal principal,
                        Model ui) {
         User user = userService.findByPrincipal(principal);
         ui.addAttribute("totalPrice", userService.calculateTotalCartPrice(user));
         return "cart";
+    }
+
+    @GetMapping("/profile")
+    public String userProfile(Principal principal,
+                              Model ui) {
+        User user = userService.findByPrincipal(principal);
+        ui.addAttribute("user", user);
+        return "profile-page";
     }
 
     @RequestMapping(value = "/cart/add", method = {RequestMethod.GET, RequestMethod.POST})
