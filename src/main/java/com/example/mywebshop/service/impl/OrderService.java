@@ -1,5 +1,6 @@
 package com.example.mywebshop.service.impl;
 
+import com.example.mywebshop.config.exception.NotFoundException;
 import com.example.mywebshop.entity.CartProduct;
 import com.example.mywebshop.entity.Order;
 import com.example.mywebshop.entity.OrderProduct;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.NotSupportedException;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,6 +34,16 @@ public class OrderService implements com.example.mywebshop.service.IOrderService
         this.orderRepository = orderRepository;
         this.cartProductRepository = cartProductRepository;
         this.mailService = mailService;
+    }
+
+    @Override
+    public void setStatus(Long orderId, String status) {
+        Order order = orderRepository
+                .findById(orderId)
+                .orElseThrow(NotFoundException::new);
+        OrderStatus newOrderStatus = OrderStatus.valueOf(status);
+        order.setStatus(newOrderStatus);
+        orderRepository.save(order);
     }
 
     @Override

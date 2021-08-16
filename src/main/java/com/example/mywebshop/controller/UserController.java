@@ -15,13 +15,13 @@ import java.security.Principal;
 public class UserController {
 
     private final IUserService userService;
-    private final IOrderService IOrderService;
+    private final IOrderService orderService;
 
     @Autowired
     public UserController(IUserService userService,
-                          IOrderService IOrderService) {
+                          IOrderService orderService) {
         this.userService = userService;
-        this.IOrderService = IOrderService;
+        this.orderService = orderService;
     }
 
     @GetMapping
@@ -63,14 +63,20 @@ public class UserController {
     public String formOrderFromCart(Model ui,
                                     Principal principal) {
         User user = userService.findByPrincipal(principal);
-        Order order = IOrderService.createOrderFromCurrentUserCart(user);
+        Order order = orderService.createOrderFromCurrentUserCart(user);
         if (order != null) {
             ui.addAttribute("orderFormed", true);
         } else {
             ui.addAttribute("orderError", "Order submit failed, perhaps your cart is empty");
         }
-        IOrderService.clearUserCart(user);
+        orderService.clearUserCart(user);
         ui.addAttribute("user", user);
         return "cart";
+    }
+
+    @PostMapping("/set-order-status")
+    public void setOrderStatus(@RequestParam Long orderId,
+                               @RequestParam String orderStatus) {
+        orderService.setStatus(orderId, orderStatus);
     }
 }
