@@ -77,6 +77,8 @@ public class Product {
         if (characteristics == null) return list;
         String[] lines = characteristics.split("\n");
         for (String line : lines) {
+            line = line.trim();
+            if (line.isEmpty()) continue;
             int firstColon = line.indexOf(":");
             String key = line.substring(0, firstColon);
             String value = line.substring(firstColon+1).trim();
