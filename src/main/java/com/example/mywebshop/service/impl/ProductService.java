@@ -173,7 +173,15 @@ public class ProductService implements IProductService {
         BigDecimal price = BigDecimal.valueOf(RandomUtils.nextDouble(1, 500));
         rating = BigDecimal.valueOf(rating).setScale(1, RoundingMode.HALF_UP).doubleValue();
         price = price.setScale(2, RoundingMode.HALF_UP);
-        return new Product(title, rndShortDescription, rndLongDescription, rating, price, category);
+        StringBuilder characteristics = new StringBuilder();
+        int characteristicsNum = RandomUtils.nextInt(0, 20);
+        for (int j = 0; j < characteristicsNum; j++) {
+            characteristics.append(RandomStringUtils.randomAlphabetic(3, 10));
+            characteristics.append(":");
+            characteristics.append(RandomStringUtils.randomAlphabetic(3, 10));
+            characteristics.append("\n");
+        }
+        return new Product(title, rndShortDescription, rndLongDescription, characteristics.toString(), rating, price, category);
     }
 
     @Override

@@ -62,10 +62,11 @@ public class Product {
     @EqualsAndHashCode.Exclude
     private List<ProductReview> reviews;
 
-    public Product(String title, String shortDescription, String description, Double rating, BigDecimal price, ProductMajorCategory category) {
+    public Product(String title, String shortDescription, String description, String characteristics, Double rating, BigDecimal price, ProductMajorCategory category) {
         this.title = title;
         this.shortDescription = shortDescription;
         this.description = description;
+        this.characteristics = characteristics;
         this.rating = rating;
         this.price = price;
         this.category = category;

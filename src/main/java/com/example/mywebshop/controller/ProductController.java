@@ -36,11 +36,12 @@ public class ProductController {
     public String products(Model ui,
                            Principal principal,
                            @RequestParam(defaultValue = "0") int pageNum,
-                           @RequestParam(defaultValue = "30") int pageSize) {
-        List<Product> page = searchFilter.getFiltered();
+                           @RequestParam(defaultValue = "18") int pageSize) {
+        List<Product> page = searchFilter.getFiltered(pageSize, pageNum);
         List<String> categoriesList = productService.getMajorCategoriesList();
         categoriesList.add(0, "all");
         User user = userService.findByPrincipal(principal);
+        ui.addAttribute("pageNum", pageNum);
         ui.addAttribute("filterParams", searchFilter.getLastParams());
         ui.addAttribute("user", user);
         ui.addAttribute("products", page);

@@ -69,7 +69,14 @@
             </div>
             <div id="characteristics">
                 <h3>Characteristics</h3>
-                <h4 th:each="property : ${product.getCharacteristicList()}" th:text="|${property.getKey()} : ${property.getValue()}|"></h4>
+                <table class="table table-striped table-hover fw-bold">
+                    <tbody>
+                    <tr th:each="property : ${product.getCharacteristicList()}">
+                        <td th:text="${property.getKey() + ' : '}">Mark</td>
+                        <td th:text="${property.getValue()}">Otto</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <div id="reviews">
                 <h2 class="mb-4" th:text="|${product.reviews.size()} Reviews|">Reviews</h2>

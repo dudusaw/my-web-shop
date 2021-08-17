@@ -84,6 +84,8 @@ public class SearchFilter implements ISearchFilter {
 
     @Override
     public List<Product> getFiltered(int pageSize, int pageNum) {
+        if (pageNum < 0) pageNum = 0;
+        if (pageSize < 0) pageSize = defaultPageSize;
         String initialQuery = Util.concat("select * from ", filteringTableName, " ", IQueryFilterParameter.alias);
         StringBuilder queryBuilder = new StringBuilder(initialQuery);
 
