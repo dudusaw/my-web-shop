@@ -69,7 +69,9 @@ public class OrderService implements com.example.mywebshop.service.IOrderService
                     cartProduct.getProduct(),
                     cartProduct.getCount());
             order.getProducts().add(orderProduct);
-            totalPrice = totalPrice.add(cartProduct.getProduct().getPrice());
+            BigDecimal price = cartProduct.getProduct().getPrice();
+            price = price.multiply(BigDecimal.valueOf(cartProduct.getCount()));
+            totalPrice = totalPrice.add(price);
         }
         return totalPrice;
     }
